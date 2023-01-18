@@ -1,0 +1,7 @@
+####
+
+# data folder
+/data
+
+# Silly inclusive mac files
+.DS_store
