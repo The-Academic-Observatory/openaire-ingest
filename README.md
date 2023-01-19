@@ -13,3 +13,17 @@ To decompress the archived files, please use:
 ./decompress
 
 which will place all of the decompressed files into data/data_decompress/(table). It will not delete the original \*.tar archive files.
+
+--- In developement ---
+
+Started work on script to upload the Openaire data to Google Cloud Storage and Bigquery.
+
+Run python script by using
+
+python main.py
+
+Need to make sure that the list of part tables are correct.
+
+--- Schemas ---
+
+Each table needs a specified schema when it's transfered from GCS to Bigquery.

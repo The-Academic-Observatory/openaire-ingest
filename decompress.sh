@@ -1,30 +1,62 @@
+# Copyright 2023 Curtin University
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Author: Alex Massen-Hane
+
 #!/bin/bash
 
 ### This script is to decompress all of the data from the Openaire data dump
-
-# Uses a combination of "tar" and "gzip"
+# Uses a combination of packages tar and gzip. You will need to delete the data/decompress folder and it's contents
+# if you wish to run this script multiple times. 
  
-# Files from repository (in order of relative size)
-openaireTarFiles=('communities_infrastructures' 'organization' 'software' 'project' 'otherresearchproduct' 'datasource' 'publication' 'relation' ) 
-numFiles=(1 1 1 1 1 1 2 11 11)
-
 # Move to data folder and create data_decompress
 cd data
-mkdir data_decompress
-cd data_decompress
+mkdir decompress
+cd decompress
 
-# Decompress each tar first
+# Decompress each tar first and place parts in their own folder, .e.g
 
-for downloaded in "../data_zipped"/*.tar; do
+# data/data_decompress/relation_1/(files)
+# data/data_decompress/relation_2/(files)
+# ... 
+
+echo "####################################################################"
+echo "Decompressing *.tar files from the archives"
+echo ""
+
+for downloaded in  "../download"/*.tar; do
+
+    part_string="${downloaded%.*}"
+    expandDir="${part_string:12}"
+    mkdir $expandDir
+    cd $expandDir
 
     echo Decompressing "$downloaded"
-    
-    tar zxvf "$downloaded" --directory .
+
+    # Expand files    
+    tar zxvf "../$downloaded" --directory .
+
+    cd ../
 
 done
 
 # Decompresses the gz parts from each tar
 # This process also deletes the *.gz secondary parts to save disk space
+
+echo "####################################################################"
+echo "Decompressing *.gz files from the archives"
+echo ""
 
 for expandedDir in */; do
 
@@ -33,16 +65,24 @@ for expandedDir in */; do
     # Go into directory with gz parts
     cd $expandedDir
 
-    for gzipPart in ./*.gz; do
+    folder=$(ls)
+    for gzipPart in ${folder}/*.gz; do
 
         echo "Decompressing file - $gzipPart"
-        gzip --decompress $gzipPart
+        gzip --decompress $gzipPart --force
+
+        # Move to parent folder
+        mv "${gzipPart%.gz}" .
 
     done
+
+    echo ""
+
+    # Remove unnecessary folder
+    rm -r "${folder}"
 
     # Exit directory
     cd ../
 
 done
-
 
