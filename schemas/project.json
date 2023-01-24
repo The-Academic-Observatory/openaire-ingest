@@ -1,0 +1,160 @@
+[
+  {
+    "name": "acronym",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "callidentifier",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "code",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The grant agreement number"
+  },
+  {
+    "name": "enddate",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "funding",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "Funding information for the project",
+    "fields": [
+      {
+        "name": "funding_stream",
+        "type": "RECORD",
+        "mode": "NULLABLE",
+        "fields": [
+          {
+            "name": "id",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Id of the funding stream"
+          },
+          {
+            "name": "description",
+            "type": "STRING",
+            "mode": "NULLABLE",
+            "description": "Description of the funding stream"
+          }
+        ]
+      },
+      {
+        "name": "jurisdiction",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The jurisdiction of the funder (i.e. EU)"
+      },
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The name of the funder (European Commission)"
+      },
+      {
+        "name": "shortName",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The short name of the funder (EC)"
+      }
+    ]
+  },
+  {
+  "name": "granted",
+  "type": "RECORD",
+  "mode": "REPEATED",
+  "description": "The money granted to the project",
+  "fields": [
+    {
+      "name": "currency",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "The currency of the granted amount (e.g. EUR)"
+    },
+    {
+      "name": "fundedamount",
+      "type": "FLOAT",
+      "mode": "NULLABLE",
+      "description": "The funded amount"
+    },
+    {
+      "name": "totalcost",
+      "type": "FLOAT",
+      "mode": "NULLABLE",
+      "description": "The money granted to the project"
+    }
+   ]
+  },
+  {
+    "name": "h2020programme",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The h2020 programme funding the project",
+    "fields": [
+      {
+        "name": "code",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The code of the programme"
+      },
+      {
+        "name": "description",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The description of the programme"
+      }
+    ]
+  },
+  {
+    "name": "id",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "OpenAIRE id for the project"
+  },
+  {
+    "name": "keywords",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "openaccessmandatefordataset",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "openaccessmandateforpublications",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "startdate",
+    "type": "DATE",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "subject",
+    "type": "STRING",
+    "mode": "REPEATED"
+  },
+  {
+    "name": "summary",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "title",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "websiteurl",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]

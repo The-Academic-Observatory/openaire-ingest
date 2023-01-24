@@ -52,13 +52,18 @@ def upload_from_gcs_to_bq(part_table_name: str, full_table_id: str, uri: str, sc
     """Uploads a table from GCS to Bigquery.
 
     :param full_table_id: Full table name to be uploaded to. project_name.dataset_name.table_name
-    :param uri: uri path of the object to be moved into Bigquery.
+    :param uri: uri path of the object to be transfered into Bigquery.
     :return success: True if success, false if upload did not complete.
 
     """
 
     # Create load job
     job_config = LoadJobConfig(source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON)
+
+    # For testing schemas
+    # job_config = LoadJobConfig(source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON, autodetect=True)
+
+    # Include schema when uploading to Bigquery
     job_config.schema = bq_client.schema_from_json(schema_file_path)
 
     # print(f"Schema of the data: {job_config.schema}")
@@ -66,9 +71,11 @@ def upload_from_gcs_to_bq(part_table_name: str, full_table_id: str, uri: str, sc
     # TODO - Add special description if it's just a singular table.
     job_config.destination_table_description = f"Part table of greater table {part_table_name}"
 
-    ## Need to include schema file here
-    load_job = bq_client.load_table_from_uri(uri, full_table_id, job_config=job_config)
-    load_job.result()
+    try:
+        load_job = bq_client.load_table_from_uri(uri, full_table_id, job_config=job_config)
+        print(f"{load_job.result()} - Successfully transfered {uri} to table: {full_table_id}")
+    except:
+        print(f"{load_job.result()}Unable to transfer {uri} to table: {full_table_id}")
 
 
 def upload_json_to_gcs(table_name: str, path_to_json: str):
@@ -185,14 +192,22 @@ def main():
 
         print(f"Uploading {num_parts_to_upload} parts of table {table_name} to GCS Bucket {bucket_name}. \n")
 
+        # List of uris to GCS objects
+        gcs_object_list = []
+
         for i in range(0, num_parts_to_upload, 1):
 
             # Upload part object to cloud storage
             gcs_object_uri = upload_json_to_gcs(table_name, list_of_paths_to_parts[i])
 
-        print(f"Transfering {num_parts_to_upload} parts of table {table_name} to bigquery dataset {dataset_name}. \n")
+            # Append to list of GCS objects
+            gcs_object_list.append(gcs_object_uri)
 
-        for i in range(0, num_parts_to_upload, 1):
+        print(f"\nTransfering {num_parts_to_upload} parts of table {table_name} to bigquery dataset {dataset_name}. \n")
+
+        # Transfer uploaded files from GCS to Bigquery
+        # for i in range(0, num_parts_to_upload, 1):
+        for gcs_object_to_transfer in gcs_object_list:
 
             # Transfer part file to bigquery.
             # This will append onto an existing table.
@@ -200,7 +215,7 @@ def main():
             upload_from_gcs_to_bq(
                 table_name,
                 f"{google_project}.{dataset_name}.{table_name}",
-                gcs_object_uri,
+                gcs_object_to_transfer,
                 f"{schema_path}/{table_name}.json",
             )
 
