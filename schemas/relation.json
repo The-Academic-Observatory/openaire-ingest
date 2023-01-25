@@ -1,0 +1,89 @@
+[
+  {
+    "name": "provenance",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "provenance",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The reason why OpenAIRE holds the relation "
+      },
+      {
+        "name": "trust",
+        "type": "FLOAT",
+        "mode": "NULLABLE",
+        "description": "The trust of the relation in the range of [0,1]. Where greater the number, more the trust. Harvested relationships have typically a high trust (0.9). The trust of inferred relationship is calculated by the inference algorithm that generated them, as described in https://graph.openaire.eu/about#architecture (Enrichment --> Mining)"
+      }
+    ]
+  },
+  {
+    "name": "reltype",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "description": "To represent the semantics of a relation between two entities",
+    "fields": [
+      {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The semantics of the relation (i.e. isAuthorInstitutionOf). "
+      },
+      {
+        "name": "type",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "the type of the relation (i.e. affiliation)"
+      }
+    ]
+  },
+  {
+    "name": "source",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "description": "The node source in the relation",
+    "fields": [ 
+      {
+        "name": "id",
+        "type": "STRING",
+        "mode": "NULLABLE"        
+      },
+      {
+        "name": "type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "name": "target",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        
+        "name": "id",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      },
+      {
+        "name": "type",
+        "type": "STRING",
+        "mode": "NULLABLE"
+      }
+    ]
+  },
+  {
+    "name": "validated",
+    "type": "BOOLEAN",
+    "mode": "NULLABLE",
+    "description":"True if the relation is related to a project and it has been collected from an authoritative source (i.e. the funder)"
+  },
+  {
+    "name": "validationDate",
+    "type": "DATE",
+    "mode": "NULLABLE",
+    "description":"The date when the relation was collected from OpenAIRE"
+  }
+]

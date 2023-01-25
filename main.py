@@ -75,7 +75,7 @@ def upload_from_gcs_to_bq(part_table_name: str, full_table_id: str, uri: str, sc
         load_job = bq_client.load_table_from_uri(uri, full_table_id, job_config=job_config)
         print(f"{load_job.result()} - Successfully transfered {uri} to table: {full_table_id}")
     except:
-        print(f"{load_job.result()}Unable to transfer {uri} to table: {full_table_id}")
+        print(f"{load_job.result()} - Unable to transfer {uri} to table: {full_table_id}")
 
 
 def upload_json_to_gcs(table_name: str, path_to_json: str):
@@ -176,34 +176,36 @@ def main():
     # list_of_tables = ["communities_infrastructures", "organization", "publication_1"]
     # list_of_tables = ["organization"]
     # list_of_tables = ["communities_infrastructures", "organization"]
+    list_of_tables = ["relation"]
 
-    list_of_tables = ["project"]
+    # list_of_tables = ["publication"]
 
     for table_name in list_of_tables:
 
         # Get list of all parts
         list_of_parts = list_files_in_dir(f"{data_path}/{table_name}")
         list_of_paths_to_parts = [join(f"{data_path}/{table_name}", file) for file in list_of_parts]
+        # Only upload to GCS if it is a *.gz file.
+        list_of_paths_to_parts_gz = [file for file in list_of_paths_to_parts if file.split(".")[-1] == "gz"]
 
         # Limit the number of uploads to reduce load.
-        num_parts_to_upload = len(list_of_paths_to_parts)
-        if num_parts_to_upload > len(list_of_paths_to_parts):
-            num_parts_to_upload = len(list_of_paths_to_parts)
+        num_parts_to_upload = len(list_of_paths_to_parts_gz)
+        if num_parts_to_upload > len(list_of_paths_to_parts_gz):
+            num_parts_to_upload = len(list_of_paths_to_parts_gz)
 
-        print(f"Uploading {num_parts_to_upload} parts of table {table_name} to GCS Bucket {bucket_name}. \n")
+        print(f"\nUploading {num_parts_to_upload} parts of table {table_name} to GCS Bucket {bucket_name}. \n")
 
         # List of uris to GCS objects
         gcs_object_list = []
-
         for i in range(0, num_parts_to_upload, 1):
 
             # Upload part object to cloud storage
-            gcs_object_uri = upload_json_to_gcs(table_name, list_of_paths_to_parts[i])
+            gcs_object_uri = upload_json_to_gcs(table_name, list_of_paths_to_parts_gz[i])
 
             # Append to list of GCS objects
             gcs_object_list.append(gcs_object_uri)
 
-        print(f"\nTransfering {num_parts_to_upload} parts of table {table_name} to bigquery dataset {dataset_name}. \n")
+        print(f"\nTransfering {num_parts_to_upload} parts of table {table_name} to bigquery dataset {dataset_name}.\n")
 
         # Transfer uploaded files from GCS to Bigquery
         # for i in range(0, num_parts_to_upload, 1):
