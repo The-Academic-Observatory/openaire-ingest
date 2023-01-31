@@ -1,0 +1,245 @@
+[
+    {
+      "name": "databaseaccessrestriction",
+      "description": "Access restrinctions to the data source, as defined by re3data.org. One of {feeRequired, registration, other}",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "dateofvalidation",
+      "description": "The date of last validation against the OpenAIRE guidelines for the datasource records",
+      "mode": "NULLABLE",
+      "type": "DATE"
+    },
+    {
+      "name": "id",
+      "description": "The OpenAIRE id of the data source",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "pidsystems",
+      "description": "The persistent identifier system that is used by the data source. As defined by re3data.org",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "citationguidelineurl",
+      "description": "The URL of the data source providing information on how to cite its items. As defined by re3data.org.",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "versioning",
+      "description": "As defined by redata.org: 'yes' if the data source supports versioning, 'no' otherwise.",
+      "mode": "NULLABLE",
+      "type": "BOOLEAN"
+    },
+    {
+      "name": "missionstatementurl",
+      "description": "The URL of a mission statement describing the designated community of the data source. As defined by re3data.org",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "languages",
+      "description": "The languages present in the data source's content, as defined by OpenDOAR.",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "accessrights",
+      "description": "Type of access to the data source, as defined by re3data.org. Possible values: {open, restricted, closed}",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "journal",
+      "description": "Information about the journal, if this data source is of type Journal.",
+      "mode": "NULLABLE",
+      "type": "RECORD",
+      "fields": [
+        {
+            "name": "conferencedate",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+            "name": "conferenceplace",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+            "name": "edition",
+            "description": "Edition of the journal or conference proceeding",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+            "name": "ep",
+            "description": "End page",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+            "name": "iss",
+            "description": "Journal issue number",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+          "name": "issnLinking",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+            "name": "issnOnline",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+          "name": "issnPrinted",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "name",
+          "description": "Name of the journal or conference",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+            "name": "sp",
+            "description": "Start page",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        },
+        {
+            "name": "vol",
+            "description": "vol",
+            "mode": "NULLABLE",
+            "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "websiteurl",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "subjects",
+      "description": "List of subjects associated to the datasource",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "policies",
+      "description": "Policies of the data source, as defined in OpenDOAR.",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "logourl",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "originalId",
+      "description": "Original identifiers for the datasource",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "officialname",
+      "description": "The official name of the datasource",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "datauploadrestriction",
+      "description": "Upload restrictions applied by the datasource, as defined by re3data.org. One of {feeRequired, registration, other}",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "datasourcetype",
+      "mode": "NULLABLE",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "value",
+          "description": "The value expressed in the scheme (Journal)",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "scheme",
+          "description": "The scheme used to express the value (i.e. pubsrepository::journal)",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "openairecompatibility",
+      "description": "OpenAIRE guidelines the data source comply with. See also https://guidelines.openaire.eu.",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "uploadrights",
+      "description": "Type of data upload. As defined by re3data.org: one of {open, restricted,closed}",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "description",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "englishname",
+      "description": "The English name of the datasource",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "releaseenddate",
+      "description": "Date when the data source went offline or stopped ingesting new research data. As defined by re3data.org",
+      "mode": "NULLABLE",
+      "type": "DATE"
+    },
+    {
+      "name": "releasestartdate",
+      "description": "Releasing date of the data source, as defined by re3data.org",
+      "mode": "NULLABLE",
+      "type": "DATE"
+    },
+    {
+      "name": "certificates",
+      "description": "The certificate, seal or standard the data source complies with. As defined by re3data.org.",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "pid",
+      "description": "Persistent identifiers of the datasource",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "value",
+          "description": "The value expressed in the scheme ",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "scheme",
+          "description": "The scheme used to express the value ",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    }
+  ]
