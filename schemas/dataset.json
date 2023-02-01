@@ -1,0 +1,517 @@
+[
+    {
+      "name": "version",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "subtitle",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "id",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "instance",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "refereed",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "accessright",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "openAccessRoute",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "scheme",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "label",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "code",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "license",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "publicationdate",
+          "mode": "NULLABLE",
+          "type": "DATE"
+        },
+        {
+          "name": "type",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "url",
+          "mode": "REPEATED",
+          "type": "STRING"
+        },
+        {
+          "name": "alternateIdentifier",
+          "mode": "REPEATED",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "value",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "scheme",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "pid",
+          "mode": "REPEATED",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "value",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "scheme",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "maintitle",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "indicators",
+      "mode": "NULLABLE",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "impactMeasures",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "influence_alt",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "class",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "score",
+                  "mode": "NULLABLE",
+                  "type": "INTEGER"
+                }
+              ]
+            },
+            {
+              "name": "impulse",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "class",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "score",
+                  "mode": "NULLABLE",
+                  "type": "INTEGER"
+                }
+              ]
+            },
+            {
+              "name": "popularity_alt",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "class",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "score",
+                  "mode": "NULLABLE",
+                  "type": "FLOAT"
+                }
+              ]
+            },
+            {
+              "name": "popularity",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "class",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "score",
+                  "mode": "NULLABLE",
+                  "type": "FLOAT"
+                }
+              ]
+            },
+            {
+              "name": "influence",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "class",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "score",
+                  "mode": "NULLABLE",
+                  "type": "FLOAT"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "usageCounts",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "views",
+              "mode": "NULLABLE",
+              "type": "INTEGER"
+            },
+            {
+              "name": "downloads",
+              "mode": "NULLABLE",
+              "type": "INTEGER"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "publicationdate",
+      "mode": "NULLABLE",
+      "type": "DATE"
+    },
+    {
+      "name": "size",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "lastupdatetimestamp",
+      "mode": "NULLABLE",
+      "type": "INTEGER"
+    },
+    {
+      "name": "originalId",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "dateofcollection",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "language",
+      "mode": "NULLABLE",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "label",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "code",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "pid",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "value",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "scheme",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "geolocation",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "box",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "place",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "point",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "bestaccessright",
+      "mode": "NULLABLE",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "scheme",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "label",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "code",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "coverage",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "contributor",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "source",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "subjects",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "provenance",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "trust",
+              "mode": "NULLABLE",
+              "type": "FLOAT"
+            },
+            {
+              "name": "provenance",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "subject",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "value",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "scheme",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "format",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "publisher",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "description",
+      "mode": "REPEATED",
+      "type": "STRING"
+    },
+    {
+      "name": "country",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "label",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "provenance",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "trust",
+              "mode": "NULLABLE",
+              "type": "FLOAT"
+            },
+            {
+              "name": "provenance",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            }
+          ]
+        },
+        {
+          "name": "code",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "type",
+      "mode": "NULLABLE",
+      "type": "STRING"
+    },
+    {
+      "name": "embargoenddate",
+      "mode": "NULLABLE",
+      "type": "DATE"
+    },
+    {
+      "name": "author",
+      "mode": "REPEATED",
+      "type": "RECORD",
+      "fields": [
+        {
+          "name": "pid",
+          "mode": "NULLABLE",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "provenance",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "trust",
+                  "mode": "NULLABLE",
+                  "type": "FLOAT"
+                },
+                {
+                  "name": "provenance",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                }
+              ]
+            },
+            {
+              "name": "id",
+              "mode": "NULLABLE",
+              "type": "RECORD",
+              "fields": [
+                {
+                  "name": "value",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                },
+                {
+                  "name": "scheme",
+                  "mode": "NULLABLE",
+                  "type": "STRING"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "rank",
+          "mode": "NULLABLE",
+          "type": "INTEGER"
+        },
+        {
+          "name": "name",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "surname",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        },
+        {
+          "name": "fullname",
+          "mode": "NULLABLE",
+          "type": "STRING"
+        }
+      ]
+    }
+  ]

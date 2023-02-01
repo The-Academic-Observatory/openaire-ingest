@@ -14,10 +14,10 @@
 
 # Author: Alex Massen-Hane
 
-### Upload part tables of the Openaire database to Goolge Bigquery and join them together.
+### Upload part tables of the Openaire database to Google Cloud Storage and transfer to Google Bigquery.
 
 # For listing part files from decompression step
-from os import listdir
+from os import listdir, getenv
 from os.path import isfile, join
 
 import pandas as pd
@@ -25,7 +25,7 @@ from typing import List, Set
 
 # Importing into Google Bigquery
 from google.cloud import bigquery, storage
-from google.cloud.bigquery import LoadJobConfig, QueryJob, SourceFormat, CopyJobConfig, CopyJob, dataset
+from google.cloud.bigquery import LoadJobConfig
 from google.cloud.exceptions import NotFound
 
 # Time taken for upload / tranfering
@@ -35,12 +35,13 @@ from datetime import timedelta
 import json
 import gzip
 
+# Initialise variables
 data_path = "data/decompress"
 schema_path = "schemas"
 
-google_project = "alex-dev-356105"
-dataset_name = "openaire_data"
-bucket_name = "openaire_data"
+google_project = getenv("PROJECT_ID")
+dataset_name = getenv("dataset_name")
+bucket_name = getenv("bucket_name")
 
 # Define Google API clients.
 bq_client = bigquery.Client()
@@ -236,24 +237,22 @@ def list_files_in_dir(path_to_files: str):
 
 def main():
 
-    # List of tables
-    # To read in and upload to bigquery
-
     # Full list of tables to upload
-    # list_of_tables = [
-    #     'communities_infrastructures',
-    #     'organization',
-    #     'software',
-    #     'project',
-    #     'otherresearchproduct',
-    #     'datasource',
-    #     'dataset',
-    #     'publication',
-    #     'relation']
+    list_of_tables = [
+        "communities_infrastructures",
+        "organization",
+        "software",
+        "project",
+        "otherresearchproduct",
+        "datasource",
+        "dataset",
+        "publication",
+        "relation",
+    ]
 
     # For testing
     # list_of_tables = ["relation"]
-    list_of_tables = ["publication"]
+    # list_of_tables = ["publication"]
 
     # Loop through each of the tables to upload and transfer.
     for table_name in list_of_tables:
@@ -278,11 +277,13 @@ def main():
         for part in string_file_type:
             file_type += f".{part}"
 
-        # preprocessing step
+        # Preprocessing step
         if table_name == "publication":
 
             # To tell the rest of the script to only find preprocessed files or not.
             preprocessed = True
+
+            print(f"List of files to process: {list_of_paths_to_parts_gz}")
 
             list_of_paths_to_filtered_parts = []
             # Loops through each part file, removes nulls from suspected column to ensure ingest to Bigquery is OK
@@ -292,19 +293,18 @@ def main():
                 output_file_path = f"data/decompress/{table_name}/{part_num}_NR{file_type}"
                 columns_where_Nones_exist = {"source"}
 
-                print(f"Preprocessing table {table_name} and {part_num}\n")
+                print(f"Preprocessing table {table_name} and {part_num}")
 
                 # If file already exisits, then it has already been preprocessed.
                 if not isfile(output_file_path):
                     remove_nulls_from_field(path_to_file, columns_where_Nones_exist, output_file_path)
 
-                    print(f"Successfully removed Nones from {columns_where_Nones_exist} in {table_name} - {part_num}")
+                    print(f"Successfully removed nulls from {columns_where_Nones_exist} in {table_name} - {part_num}")
 
                     list_of_paths_to_filtered_parts.append(output_file_path)
 
+            # Replace with list of parts that are filtered instead
             if len(list_of_paths_to_filtered_parts) > 0:
-
-                # Replace with list of parts that are filtered instead
                 list_of_paths_to_parts_gz = list_of_paths_to_filtered_parts
 
         else:
@@ -313,11 +313,11 @@ def main():
 
         parts_to_upload_local = [filepath.split("/")[-1] for filepath in list_of_paths_to_parts_gz]
 
-        # # For testing
-        # # Limit the number of uploads to reduce load.
-        # # num_parts_to_upload = len(list_of_paths_to_parts_gz)
-        # # if num_parts_to_upload > len(list_of_paths_to_parts_gz):
-        # #     num_parts_to_upload = len(list_of_paths_to_parts_gz)
+        # For testing
+        # Limit the number of uploads to reduce load.
+        # num_parts_to_upload = len(list_of_paths_to_parts_gz)
+        # if num_parts_to_upload > len(list_of_paths_to_parts_gz):
+        #     num_parts_to_upload = len(list_of_paths_to_parts_gz)
 
         # Get list of blobs in GCS - only upload parts that are not already on GCS.
         list_gcs_blobs = gcs_client.list_blobs(bucket_name, prefix=f"{table_name}/")
@@ -325,7 +325,6 @@ def main():
 
         # Resolve difference of local and cloud files
         parts_to_upload = list(set(parts_to_upload_local).difference(set(parts_already_in_gcs)))
-
         parts_to_upload.sort()
 
         if len(parts_to_upload) > 0:
@@ -345,78 +344,80 @@ def main():
                 # Append to list of GCS objects
                 gcs_object_list_uploaded.append(gcs_object_uri)
 
-            print(f"\nChecking if need to add more parts to the {table_name} table... ")
+            print(f"\nFinished uploading {len(parts_to_upload)} to GCS.")
+            # print(f"\nChecking if need to add more parts to the {table_name} table... ")
 
         else:
-            print(f"\nNo parts to upload. Checking if need to add more parts to the '{table_name}' table... ")
+            print(f"\nNo parts to upload.")
+            # print(f"\nNo parts to upload. Checking if need to add more parts to the '{table_name}' table... ")
 
-        # Get updated list of GCS blobs after adding more parts. Alhough could get from extending two lists.
-        # it is best to do and confirm from the GCS side, not from local lists.
-        list_gcs_blobs_updated = gcs_client.list_blobs(bucket_name, prefix=f"{table_name}/")
+        # # Get updated list of GCS blobs after adding more parts. Alhough could get from extending two lists.
+        # # it is best to do and confirm from the GCS side, not from local lists.
+        # list_gcs_blobs_updated = gcs_client.list_blobs(bucket_name, prefix=f"{table_name}/")
 
-        if preprocessed:
-            parts_already_in_gcs_updated = [
-                blob.name.split("/")[-1] for blob in list_gcs_blobs_updated if "NR" in blob.name
-            ]
-        else:
-            parts_already_in_gcs_updated = [blob.name.split("/")[-1] for blob in list_gcs_blobs_updated]
+        # if preprocessed:
+        #     parts_already_in_gcs_updated = [
+        #         blob.name.split("/")[-1] for blob in list_gcs_blobs_updated if "NR" in blob.name
+        #     ]
+        # else:
+        #     parts_already_in_gcs_updated = [blob.name.split("/")[-1] for blob in list_gcs_blobs_updated]
 
-        if check_if_table_exists(full_table_name):
+        # if check_if_table_exists(full_table_name):
 
-            # Get list of parts to transfer from bq table
-            list_of_parts_in_table = get_list_of_parts_already_in_table(full_table_name, file_type)
-            print(f"List of parts in {full_table_name} - {list_of_parts_in_table}\n")
+        #     # Get list of parts to transfer from bq table
+        #     list_of_parts_in_table = get_list_of_parts_already_in_table(full_table_name, file_type)
+        #     print(f"List of parts in {full_table_name} - {list_of_parts_in_table}\n")
 
-            parts_to_add_to_table = list(set(list_of_parts_in_table).difference(set(parts_already_in_gcs_updated)))
-            parts_to_add_to_table.sort()
+        #     parts_to_add_to_table = list(set(list_of_parts_in_table).difference(set(parts_already_in_gcs_updated)))
+        #     parts_to_add_to_table.sort()
 
-            print(f"List of parts to add to the table: {parts_to_add_to_table}\n")
+        #     print(f"List of parts to add to the table: {parts_to_add_to_table}\n")
 
-            new_table = True
+        #     new_table = True
 
-        else:
-            print(f"Table '{table_name}' does not already exist in Bigquery.")
+        # else:
+        #     print(f"Table '{table_name}' does not already exist in Bigquery.")
 
-            # No parts in table as it doesn't exist. Add all from GCS
-            parts_to_add_to_table = parts_already_in_gcs_updated
-            parts_to_add_to_table.sort()
-            list_of_parts_in_table = []
+        #     # No parts in table as it doesn't exist. Add all from GCS
+        #     parts_to_add_to_table = parts_already_in_gcs_updated
+        #     parts_to_add_to_table.sort()
+        #     list_of_parts_in_table = []
 
-            base_description = f"Table '{table_name}' containing parts:"
+        #     base_description = f"Table '{table_name}' containing parts:"
 
-            # Create table with base description and the schema for the table.
-            create_bigquery_table(full_table_name, base_description, path_to_table_schema)
+        #     # Create table with base description and the schema for the table.
+        #     create_bigquery_table(full_table_name, base_description, path_to_table_schema)
 
-            new_table = True
+        #     new_table = True
 
-        print(
-            f"\nTransfering {len(parts_to_add_to_table)} parts of table {table_name} to bigquery dataset {dataset_name}.\n"
-        )
+        # print(
+        #     f"\nTransfering {len(parts_to_add_to_table)} parts of table {table_name} to bigquery dataset {dataset_name}.\n"
+        # )
 
-        print(f"Number of parts in table already {len(list_of_parts_in_table)} - {list_of_parts_in_table}\n")
+        # print(f"Number of parts in table already {len(list_of_parts_in_table)} - {list_of_parts_in_table}\n")
 
-        # Transfer uploaded files from GCS to Bigquery
-        count = 0
-        for part_to_add in parts_to_add_to_table:
+        # # Transfer uploaded files from GCS to Bigquery
+        # count = 0
+        # for part_to_add in parts_to_add_to_table:
 
-            # Uri of part table to append to larger table.
-            uri_to_transfer = f"gs://{bucket_name}/{table_name}/{part_to_add}"
+        #     # Uri of part table to append to larger table.
+        #     uri_to_transfer = f"gs://{bucket_name}/{table_name}/{part_to_add}"
 
-            upload_from_gcs_to_bq(
-                table_name,
-                f"{google_project}.{dataset_name}.{table_name}",
-                uri_to_transfer,
-                f"{schema_path}/{table_name}.json",
-            )
+        #     upload_from_gcs_to_bq(
+        #         table_name,
+        #         f"{google_project}.{dataset_name}.{table_name}",
+        #         uri_to_transfer,
+        #         f"{schema_path}/{table_name}.json",
+        #     )
 
-            # Update table description with new part table number.
-            if count == 0 and list_of_parts_in_table == []:
-                # Ensure good formatting for list of parts on table description.
-                append_string_to_table_description(full_table_name, f"{part_to_add.split('.')[0]}")
-            else:
-                append_string_to_table_description(full_table_name, f",{part_to_add.split('.')[0]}")
+        #     # Update table description with new part table number.
+        #     if count == 0 and list_of_parts_in_table == []:
+        #         # Ensure good formatting for list of parts on table description.
+        #         append_string_to_table_description(full_table_name, f"{part_to_add.split('.')[0]}")
+        #     else:
+        #         append_string_to_table_description(full_table_name, f",{part_to_add.split('.')[0]}")
 
-            count += 1
+        #     count += 1
 
 
 def remove_nulls_from_field(
