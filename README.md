@@ -64,7 +64,9 @@ The python script "main.py" contains functions for uploading to Google Cloud Sto
 You will also need to create a Google Cloud Storage bucket and Google Bigquery dataset for holding the Openaire data, both with the name of "openaire_data". You will also need to store this imformation as an environment variable in your bash shell so that the python script can pick it up. Run each of these lines separately:
 
 `PROJECT_ID='<your google project ID>'`
+
 `bucket_name='openaire_data'`
+
 `dataset_name='openaire_data'`
 
 ### Upload to Google Cloud Storage
@@ -75,17 +77,15 @@ It has some logic in it that will look at the exisiting files in Google Cloud St
 
 ### Preprocessing step
 
-Please note that the "publication" table had issues in the "source" field when importing into Bigquery. Big query was not able to import the table when there were entries of:
+Please note that the "publication" table had issues in the "source" field when importing. Bigquery was not able to import the table with entries of:
 
 `["Crossref",null]`
 
-as there were both strings and nulls in the array. This meant that a preprocessing step was required to remove the uncessary nulls before transferring into Bigquery. The python script will recognise the "publication" table and loop over all of the part table files and remove the unnecessary nulls from the "source" field.
-
-The output of this preprocessing step effectively duplicates the part table file without the nulls present and are stored as, for example:
+as there were both strings and nulls in the array. The python script will recognise the "publication" table and loop over all of the part table files and remove the unnecessary nulls from the "source" field. The output of this preprocessing step effectively duplicates the part table file without the nulls present and are stored as, for example:
 
 /data/decompress/publication/part_00010_NR.txt.gz
 
-where the "NR" stands for "nulls removed". These processed versions of the part table files are uploaded to GCS instead of the orginal part table files.
+where the "NR" stands for "nulls removed". These filtered version of the part table files are uploaded to GCS instead of the orginal part table files.
 
 ### Transferiing to Google Bigquery
 
@@ -99,9 +99,9 @@ Instead, use the web GUI of Bigquery to import the tables from GCS using a patte
 
 `openaire_data/relation/part-*.json.gz`
 
-Name the table appropriately and make sure that the correct table schema is used for the table.
+Name the table appropriately and make sure that the correct schema is used for the table.
 
-### Schemas
+## Schemas
 
 Only some schemas are provided with the Openaire data dump on Zenodo: https://zenodo.org/record/7492151
 

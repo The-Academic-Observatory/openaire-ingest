@@ -129,17 +129,10 @@ def get_list_of_parts_already_in_table(full_table_name: str, file_type: str):
 
 def upload_from_gcs_to_bq(part_table_name: str, full_table_id: str, uri: str, schema_file_path: str):
 
-    """Uploads a table from GCS to Bigquery.
-
-    This function checks to see what parts have already been added to the table by using the description to hold
-    the list of parts. If the part is already in the table, then it will not add it again.
-
-    Adding to the table description parts list will only be done after a succesful upload of the part table.
+    """Uploads a table from GCS to Bigquery. Will append data to an existing table.
 
     :param full_table_id: Full table name to be uploaded to. project_name.dataset_name.table_name
     :param uri: uri path of the object to be transfered into Bigquery.
-    :return success: True if success, false if upload did not complete.
-
     """
 
     # Create bq load job
@@ -351,6 +344,8 @@ def main():
             print(f"\nNo parts to upload.")
             # print(f"\nNo parts to upload. Checking if need to add more parts to the '{table_name}' table... ")
 
+        ### Transferring to BQ has been removed as it is slow and unreliable.
+
         # # Get updated list of GCS blobs after adding more parts. Alhough could get from extending two lists.
         # # it is best to do and confirm from the GCS side, not from local lists.
         # list_gcs_blobs_updated = gcs_client.list_blobs(bucket_name, prefix=f"{table_name}/")
@@ -427,8 +422,8 @@ def remove_nulls_from_field(
 ):
 
     """
-    Removes unnecessary Nulls/Nones from a suspect column or multiple colums that are causing issues with importing to Google Bigquery.
-    Reads from the part *.gz files and writes to a similarly named output file.
+    Removes unnecessary nulls/Nones from a suspect column or multiple colums that are causing issues with importing to Google Bigquery.
+    Reads from the part *.gz files and writes to a similarly named output file. Only finds top level fields.
 
     :param path_to_file: Path to the file with the Nones.
     :oaram suspect_columns: Set of columns that have the Nones. Top level to the data only.
