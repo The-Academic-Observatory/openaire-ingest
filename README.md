@@ -61,7 +61,7 @@ Install the required packages:
 
 The python script "main.py" contains functions for uploading to Google Cloud Storage and transfering to Google Bigquery. It contains a list of tables to loop through for uploading and tranfering into Google. If you do not wish to inlcude all the tables, please edit "list_of_tables" as needed.
 
-You will also need to create a Google Cloud Storage bucket and Google Bigquery dataset for holding the Openaire data, both with the name of "openaire_data". You will also need to store this imformation as an environment variable in your bash shell so that the python script can pick it up. Run each of these lines separately:
+You will also need to create a Google Cloud Storage bucket and Google Bigquery dataset for holding the Openaire data, both with the name of "openaire_data". You will also need to store this information as an environment variable in your bash shell so that the python script can pick it up. Run each of these lines separately:
 
 `PROJECT_ID='<your google project ID>'`
 
