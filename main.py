@@ -17,7 +17,8 @@
 ### Upload part tables of the Openaire database to Google Cloud Storage and transfer to Google Bigquery.
 
 # For listing part files from decompression step
-from os import listdir, getenv
+import os
+from os import listdir
 from os.path import isfile, join
 
 import pandas as pd
@@ -28,9 +29,6 @@ from google.cloud import bigquery, storage
 from google.cloud.bigquery import LoadJobConfig
 from google.cloud.exceptions import NotFound
 
-# Time taken for upload / tranfering
-from datetime import timedelta
-
 # Reading in files
 import json
 import gzip
@@ -39,9 +37,9 @@ import gzip
 data_path = "data/decompress"
 schema_path = "schemas"
 
-google_project = getenv("PROJECT_ID")
-dataset_name = getenv("dataset_name")
-bucket_name = getenv("bucket_name")
+google_project = os.getenv("PROJECT_ID")
+dataset_name = os.getenv("DATASET_NAME")
+bucket_name = os.getenv("BUCKET_NAME")
 
 # Define Google API clients.
 bq_client = bigquery.Client()
@@ -290,11 +288,15 @@ def main():
 
                 # If file already exisits, then it has already been preprocessed.
                 if not isfile(output_file_path):
+
                     remove_nulls_from_field(path_to_file, columns_where_Nones_exist, output_file_path)
 
                     print(f"Successfully removed nulls from {columns_where_Nones_exist} in {table_name} - {part_num}")
 
-                    list_of_paths_to_filtered_parts.append(output_file_path)
+                else:
+                    print(f"Part {part_num} of {table_name} table has already been processed - {output_file_path}")
+
+                list_of_paths_to_filtered_parts.append(output_file_path)
 
             # Replace with list of parts that are filtered instead
             if len(list_of_paths_to_filtered_parts) > 0:

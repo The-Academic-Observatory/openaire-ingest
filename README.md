@@ -65,9 +65,9 @@ You will also need to create a Google Cloud Storage bucket and Google Bigquery d
 
 `PROJECT_ID='<your google project ID>'`
 
-`bucket_name='openaire_data'`
+`BUCKET_NAME='openaire_data'`
 
-`dataset_name='openaire_data'`
+`DATSET_NAME='openaire_data'`
 
 ### Upload to Google Cloud Storage
 
