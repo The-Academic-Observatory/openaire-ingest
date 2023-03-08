@@ -103,9 +103,17 @@ Name the table appropriately and make sure that the correct schema is used for t
 
 ## Schemas
 
-Only some schemas are provided with the Openaire data dump on Zenodo: https://zenodo.org/record/7492151
+Direct schemas (with descriptions) for the following tables are provided on Zenodo:
 
-The rest of the table schemas were generated with the help of the following python package
+    - community_infrastructure
+    - datasource
+    - organization
+    - project
+    - relation
+
+The rest of the descriptions for the data for the software, publciation, dataset and otherresearchproduct tables are stored in the results schema since these are merged into a larger relational table. The relevant descriptions have been pulled out from the results schema from Zendo and put into the software, publciation, dataset and otherresearchproduct schema files.
+
+The following package was used to assist with making schemas for the Openaire dataset:
 
 https://github.com/bxparks/bigquery-schema-generator
 

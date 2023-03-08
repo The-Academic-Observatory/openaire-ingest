@@ -1,6 +1,7 @@
 [
     {
       "name": "version",
+      "description": "Explanatory or alternative name by which a scientific result is known.",
       "mode": "NULLABLE",
       "type": "STRING"
     },
@@ -11,21 +12,25 @@
     },
     {
       "name": "id",
+      "description": "The OpenAIRE identifiers for this result",
       "mode": "NULLABLE",
       "type": "STRING"
     },
     {
       "name": "instance",
+      "description": "Each instance is one specific materialisation or version of the result. For example, you can have one result with three instance: one is the pre-print, one is the post-print, one is te published version",
       "mode": "REPEATED",
       "type": "RECORD",
       "fields": [
         {
           "name": "refereed",
+          "description": "If this instance has been peer-reviewed or not. Allowed values are peerReviewed, nonPeerReviewed, UNKNOWN (as defined in https://api.openaire.eu/vocabularies/dnet:review_levels)",
           "mode": "NULLABLE",
           "type": "STRING"
         },
         {
           "name": "accessright",
+          "description": "The accessRights for this materialization of the result",
           "mode": "NULLABLE",
           "type": "RECORD",
           "fields": [
@@ -36,16 +41,19 @@
             },
             {
               "name": "scheme",
+              "description": "Scheme of reference for access right code. Always set to COAR access rights vocabulary: http://vocabularies.coar-repositories.org/documentation/access_rights/",
               "mode": "NULLABLE",
               "type": "STRING"
             },
             {
               "name": "label",
+              "description": "Label for the access mode",
               "mode": "NULLABLE",
               "type": "STRING"
             },
             {
               "name": "code",
+              "description": "COAR access mode code: http://vocabularies.coar-repositories.org/documentation/access_rights/",
               "mode": "NULLABLE",
               "type": "STRING"
             }
@@ -58,11 +66,13 @@
         },
         {
           "name": "publicationdate",
+          "description": "Date of the research product",
           "mode": "NULLABLE",
           "type": "DATE"
         },
         {
           "name": "type",
+          "description": "Type of the result: one of 'publication', 'dataset', 'software', 'other' (see also https://api.openaire.eu/vocabularies/dnet:result_typologies)",
           "mode": "NULLABLE",
           "type": "STRING"
         },
@@ -73,16 +83,19 @@
         },
         {
           "name": "alternateIdentifier",
+          "description": "All the identifiers other than pids forged by an authorithy for the pid type (i.e. Crossref for DOIs",
           "mode": "REPEATED",
           "type": "RECORD",
           "fields": [
             {
               "name": "value",
+              "description": "The value expressed in the scheme",
               "mode": "NULLABLE",
               "type": "STRING"
             },
             {
               "name": "scheme",
+              "description": "The scheme of the identifier. It can be a persistent identifier (i.e. doi). If it is present in the alternate identifiers it means it has not been forged by an authority for that pid. For example we collect metadata from an institutional repository that provides as identifier for the result also the doi",
               "mode": "NULLABLE",
               "type": "STRING"
             }
@@ -109,16 +122,19 @@
     },
     {
       "name": "maintitle",
+      "description": "A name or title by which a scientific result is known. May be the title of a publication, of a dataset or the name of a piece of software.",
       "mode": "NULLABLE",
       "type": "STRING"
     },
     {
       "name": "indicators",
+      "description": "Indicators computed for this result, for example UsageCount ones",
       "mode": "NULLABLE",
       "type": "RECORD",
       "fields": [
         {
           "name": "impactMeasures",
+          "description": "The impact measures (i.e. popularity)",
           "mode": "NULLABLE",
           "type": "RECORD",
           "fields": [
@@ -211,6 +227,7 @@
         },
         {
           "name": "usageCounts",
+          "description": "The usage counts (i.e. downloads)",
           "mode": "NULLABLE",
           "type": "RECORD",
           "fields": [
@@ -230,26 +247,31 @@
     },
     {
       "name": "publicationdate",
+      "description": "Date of the research product",
       "mode": "NULLABLE",
       "type": "DATE"
     },
     {
       "name": "size",
+      "description": "Only for results with type 'dataset': the declared size of the dataset",
       "mode": "NULLABLE",
       "type": "STRING"
     },
     {
       "name": "lastupdatetimestamp",
+      "description": "Timestamp of last update of the record in OpenAIRE",
       "mode": "NULLABLE",
       "type": "INTEGER"
     },
     {
       "name": "originalId",
+      "description": "Identifiers of the record at the original sources",
       "mode": "REPEATED",
       "type": "STRING"
     },
     {
       "name": "dateofcollection",
+      "description": "When OpenAIRE collected the record the last time",
       "mode": "NULLABLE",
       "type": "STRING"
     },
@@ -260,11 +282,13 @@
       "fields": [
         {
           "name": "label",
+          "description": "Language label in English",
           "mode": "NULLABLE",
           "type": "STRING"
         },
         {
           "name": "code",
+          "description": "alpha-3/ISO 639-2 code of the language",
           "mode": "NULLABLE",
           "type": "STRING"
         }
@@ -289,6 +313,7 @@
     },
     {
       "name": "geolocation",
+      "description": "Geolocation information",
       "mode": "REPEATED",
       "type": "RECORD",
       "fields": [
@@ -311,21 +336,25 @@
     },
     {
       "name": "bestaccessright",
+      "description": "The openest of the access rights of this result.",
       "mode": "NULLABLE",
       "type": "RECORD",
       "fields": [
         {
           "name": "scheme",
+          "description": "Scheme of reference for access right code. Always set to COAR access rights vocabulary: http://vocabularies.coar-repositories.org/documentation/access_rights/",
           "mode": "NULLABLE",
           "type": "STRING"
         },
         {
           "name": "label",
+          "description": "Label for the access mode",
           "mode": "NULLABLE",
           "type": "STRING"
         },
         {
           "name": "code",
+          "description": "COAR access mode code: http://vocabularies.coar-repositories.org/documentation/access_rights/",
           "mode": "NULLABLE",
           "type": "STRING"
         }
@@ -338,16 +367,19 @@
     },
     {
       "name": "contributor",
+      "description": "Contributors for the result",
       "mode": "REPEATED",
       "type": "STRING"
     },
     {
       "name": "source",
+      "description": "See definition of Dublin Core field dc:source",
       "mode": "REPEATED",
       "type": "STRING"
     },
     {
       "name": "subjects",
+      "description": "Keywords associated to the result",
       "mode": "REPEATED",
       "type": "RECORD",
       "fields": [
@@ -375,11 +407,13 @@
           "fields": [
             {
               "name": "value",
+              "description": "The value for the subject in the selected scheme.  When the scheme is 'keyword', it means that the subject is free-text (i.e. not a term from a controlled vocabulary).",
               "mode": "NULLABLE",
               "type": "STRING"
             },
             {
               "name": "scheme",
+              "description": "OpenAIRE subject classification scheme (https://api.openaire.eu/vocabularies/dnet:subject_classification_typologies).",
               "mode": "NULLABLE",
               "type": "STRING"
             }
@@ -404,16 +438,19 @@
     },
     {
       "name": "country",
+      "description": "The list of countries associated to this result",
       "mode": "REPEATED",
       "type": "RECORD",
       "fields": [
         {
           "name": "label",
+          "description": "The label for that code (i.e. Italy)",
           "mode": "NULLABLE",
           "type": "STRING"
         },
         {
           "name": "provenance",
+          "description": "Why this result is associated to the country.",
           "mode": "NULLABLE",
           "type": "RECORD",
           "fields": [
@@ -431,6 +468,7 @@
         },
         {
           "name": "code",
+          "description": "ISO 3166-1 alpha-2 country code (i.e. IT)",
           "mode": "NULLABLE",
           "type": "STRING"
         }
@@ -438,11 +476,13 @@
     },
     {
       "name": "type",
+      "description": "Type of the result: one of 'publication', 'dataset', 'software', 'other' (see also https://api.openaire.eu/vocabularies/dnet:result_typologies)",
       "mode": "NULLABLE",
       "type": "STRING"
     },
     {
       "name": "embargoenddate",
+      "description": "Date when the embargo ends and this result turns Open Access",
       "mode": "NULLABLE",
       "type": "DATE"
     },
@@ -453,11 +493,13 @@
       "fields": [
         {
           "name": "pid",
+          "description": "The author's persistent identifiers",
           "mode": "NULLABLE",
           "type": "RECORD",
           "fields": [
             {
               "name": "provenance",
+              "description": "The reason why the pid was associated to the author",
               "mode": "NULLABLE",
               "type": "RECORD",
               "fields": [
@@ -480,11 +522,13 @@
               "fields": [
                 {
                   "name": "value",
+                  "description": "The author's pid value in that scheme (i.e. 0000-1111-2222-3333)",
                   "mode": "NULLABLE",
                   "type": "STRING"
                 },
                 {
                   "name": "scheme",
+                  "description": "The author's pid scheme.  OpenAIRE currently supports 'ORCID'",
                   "mode": "NULLABLE",
                   "type": "STRING"
                 }

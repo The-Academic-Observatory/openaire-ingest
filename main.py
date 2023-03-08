@@ -136,8 +136,8 @@ def upload_from_gcs_to_bq(part_table_name: str, full_table_id: str, uri: str, sc
     # Create bq load job
     job_config = LoadJobConfig(source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON)
 
-    # # For testing schemas
-    # # job_config = LoadJobConfig(source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON, autodetect=True)
+    # For testing schemas
+    # job_config = LoadJobConfig(source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON, autodetect=True)
 
     # Include schema when uploading to Bigquery
     job_config.schema = bq_client.schema_from_json(schema_file_path)
@@ -243,7 +243,6 @@ def main():
 
     # For testing
     # list_of_tables = ["relation"]
-    # list_of_tables = ["publication"]
 
     # Loop through each of the tables to upload and transfer.
     for table_name in list_of_tables:
@@ -344,77 +343,8 @@ def main():
 
         else:
             print(f"\nNo parts to upload.")
-            # print(f"\nNo parts to upload. Checking if need to add more parts to the '{table_name}' table... ")
 
         ### Transferring to BQ has been removed as it is slow and unreliable.
-
-        # # Get updated list of GCS blobs after adding more parts. Alhough could get from extending two lists.
-        # # it is best to do and confirm from the GCS side, not from local lists.
-        # list_gcs_blobs_updated = gcs_client.list_blobs(bucket_name, prefix=f"{table_name}/")
-
-        # if preprocessed:
-        #     parts_already_in_gcs_updated = [
-        #         blob.name.split("/")[-1] for blob in list_gcs_blobs_updated if "NR" in blob.name
-        #     ]
-        # else:
-        #     parts_already_in_gcs_updated = [blob.name.split("/")[-1] for blob in list_gcs_blobs_updated]
-
-        # if check_if_table_exists(full_table_name):
-
-        #     # Get list of parts to transfer from bq table
-        #     list_of_parts_in_table = get_list_of_parts_already_in_table(full_table_name, file_type)
-        #     print(f"List of parts in {full_table_name} - {list_of_parts_in_table}\n")
-
-        #     parts_to_add_to_table = list(set(list_of_parts_in_table).difference(set(parts_already_in_gcs_updated)))
-        #     parts_to_add_to_table.sort()
-
-        #     print(f"List of parts to add to the table: {parts_to_add_to_table}\n")
-
-        #     new_table = True
-
-        # else:
-        #     print(f"Table '{table_name}' does not already exist in Bigquery.")
-
-        #     # No parts in table as it doesn't exist. Add all from GCS
-        #     parts_to_add_to_table = parts_already_in_gcs_updated
-        #     parts_to_add_to_table.sort()
-        #     list_of_parts_in_table = []
-
-        #     base_description = f"Table '{table_name}' containing parts:"
-
-        #     # Create table with base description and the schema for the table.
-        #     create_bigquery_table(full_table_name, base_description, path_to_table_schema)
-
-        #     new_table = True
-
-        # print(
-        #     f"\nTransfering {len(parts_to_add_to_table)} parts of table {table_name} to bigquery dataset {dataset_name}.\n"
-        # )
-
-        # print(f"Number of parts in table already {len(list_of_parts_in_table)} - {list_of_parts_in_table}\n")
-
-        # # Transfer uploaded files from GCS to Bigquery
-        # count = 0
-        # for part_to_add in parts_to_add_to_table:
-
-        #     # Uri of part table to append to larger table.
-        #     uri_to_transfer = f"gs://{bucket_name}/{table_name}/{part_to_add}"
-
-        #     upload_from_gcs_to_bq(
-        #         table_name,
-        #         f"{google_project}.{dataset_name}.{table_name}",
-        #         uri_to_transfer,
-        #         f"{schema_path}/{table_name}.json",
-        #     )
-
-        #     # Update table description with new part table number.
-        #     if count == 0 and list_of_parts_in_table == []:
-        #         # Ensure good formatting for list of parts on table description.
-        #         append_string_to_table_description(full_table_name, f"{part_to_add.split('.')[0]}")
-        #     else:
-        #         append_string_to_table_description(full_table_name, f",{part_to_add.split('.')[0]}")
-
-        #     count += 1
 
 
 def remove_nulls_from_field(
