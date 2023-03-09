@@ -1,10 +1,10 @@
-# Openaire Data Ingest
+# OpenAIRE Data Ingest
 
-This repository is for ingesting the Openaire data dump into Bigquery. Download and decompression scripts are made for unix systems with use of Bash, Curl and Python v3.8 .
+This repository is for ingesting the OpenAIRE data dump into Bigquery. Download and decompression scripts are made for unix systems with use of Bash, Curl and Python v3.8 .
 
 ## Downloading
 
-The current tables (as of January 2023) are:
+The current tables (v5.0.0, December 30 2022) are:
 
 - communities_infrastructures
 - organization
@@ -18,13 +18,13 @@ The current tables (as of January 2023) are:
 
 Please read the following for more information:
 
-https://zenodo.org/record/7488618#.Y8UGR-xBz0p
+https://doi.org/10.5281/zenodo.7488618
 
-To download the Openaire data dump from Zenodo, please run the following bash script:
+To download the OpenAIRE data dump from Zenodo, please run the following bash script:
 
 `./download.sh`
 
-This will download all of the 9 Openaire tables into the following folder data/donwload/{table_name}\_{#}.tar using Curl sequentially and may take some time as Zendo is fairly slow.
+This will download all of the 9 Openaire tables into the following folder data/donwload/{table_name}\_{#}.tar using Curl sequentially and may take some time as Zenodo is fairly slow.
 
 ## Decompress
 
@@ -111,7 +111,7 @@ Direct schemas (with descriptions) for the following tables are provided on Zeno
     - project
     - relation
 
-The rest of the descriptions for the data for the software, publciation, dataset and otherresearchproduct tables are stored in the results schema since these are merged into a larger relational table. The relevant descriptions have been pulled out from the results schema from Zendo and put into the software, publciation, dataset and otherresearchproduct schema files.
+The rest of the descriptions for the data for the software, publciation, dataset and otherresearchproduct tables are stored in the results schema since these are merged into a larger relational table. The relevant descriptions have been pulled out from the results schema from Zendo and put into the software, publication, dataset and otherresearchproduct schema files.
 
 The following package was used to assist with making schemas for the Openaire dataset:
 
