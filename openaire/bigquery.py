@@ -51,7 +51,7 @@ def bq_table_exists(table_id: str) -> bool:
     return table_exists
 
 
-def bq_create_dataset(*, project_id: str, dataset_id: str, location: str, description: str = "") -> bigquery.Dataset:
+def bq_create_dataset(project_id: str, dataset_id: str, location: str, description: str = "") -> bigquery.Dataset:
     """Create a BigQuery dataset.
 
     :param project_id: the Google Cloud project id.

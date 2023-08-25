@@ -62,7 +62,7 @@
               {
                 "name": "value",
                 "description": "The author's pid value in that scheme (i.e. 0000-1111-2222-3333)",
-                "mode": "NULLABLE",              
+                "mode": "NULLABLE",
                 "type": "STRING"
               }
             ]
@@ -199,14 +199,13 @@
           {
             "name": "provenance",
             "type": "STRING",
-            "mode": "NULLABLE" 
+            "mode": "NULLABLE"
           },
           {
             "name": "trust",
             "type": "STRING",
-            "mode": "NULLABLE" 
+            "mode": "NULLABLE"
           }
-  
         ]
       }
     ]
@@ -214,7 +213,7 @@
   {
     "name": "dateofcollection",
     "description": "When OpenAIRE collected the record the last time",
-    "type": "STRING",
+    "type": "DATE",
     "mode": "NULLABLE"
   },
   {
@@ -225,7 +224,7 @@
   {
     "name": "embargoenddate",
     "description": "Date when the embargo ends and this result turns Open Access",
-    "type": "STRING",
+    "type": "DATE",
     "mode": "NULLABLE"
   },
   {
@@ -265,7 +264,7 @@
             "mode": "NULLABLE",
             "type": "FLOAT"
           }
-         ]
+        ]
       },
       {
         "name": "usageCounts",
@@ -283,7 +282,7 @@
             "type": "INTEGER",
             "mode": "NULLABLE"
           }
-        ] 
+        ]
       },
       {
         "name": "id",
@@ -395,7 +394,6 @@
           }
         ]
       }
-  
     ]
   },
   {
@@ -445,7 +443,7 @@
             "type": "STRING",
             "mode": "NULLABLE"
           }
-        ]  
+        ]
       },
       {
         "name": "license",
@@ -521,7 +519,6 @@
           }
         ]
       }
-  
     ]
   },
   {
@@ -661,4 +658,4 @@
     "type": "STRING",
     "mode": "NULLABLE"
   }
-]  
+]

@@ -118,3 +118,7 @@ The following package was used to assist with making schemas for the Openaire da
 https://github.com/bxparks/bigquery-schema-generator
 
 and were edited as necessary.
+
+# NEED TO INSTALL FIRST
+
+sudo apt install libcurl4-openssl-dev libssl-dev

@@ -19,30 +19,51 @@
 
 # Functions relevent for cleaning the Openaire data.
 
-import wget
-import logging
+import os
+import pycurl
+from io import BytesIO
+import subprocess
 from typing import Set
 from openaire.files import load_jsonl_gz, save_jsonl_gz
 
 
-def download_from_zenodo(base_url: str, record_id: str, file: str, output_path: str):
-    """Download a single file from Zenodo using Wget.
+def download_from_zenodo(url: str, output_path: str):
+    """Download a single file from Zenodo using the pycurl library.
+    If the file has already been downloaded previously, it will not download it again.
 
-    :
-    :
-    :
-    :
+    :param url: Url of the file to download.
+    :param output_path: Path of the download on disk.
+    :return: True if downloaded successfuflly, otherwise false.
     """
 
-    record_url = f"{base_url}/{record_id}/files/{filename}"
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, url)
+
+    print(f"Downloading file {os.path.basename(output_path)} to {url}")
 
     try:
-        filename = wget.download(url=record_url, out=output_path)
-    except:
-        logging.error(f"Unable to download file: {filename} from {record_url}")
-        return False
+        # Check fiels already exists.
+        if os.path.exists(output_path):
+            print(f"Found old file. Deleting previous download and starting again.")
+            os.remove(output_path)
 
-    return filename
+        # Write download to file.
+        with open(output_path, "wb") as f:
+            c.setopt(pycurl.WRITEDATA, f)
+            c.perform()
+
+        if c.getinfo(pycurl.HTTP_CODE) == 200 or c.getinfo(pycurl.HTTP_CODE) == 206:
+            print(f"File successfully resumed and downloaded: {url}")
+        else:
+            print(f"Failed to download the file. HTTP status code: {c.getinfo(pycurl.HTTP_CODE)} url: {url}")
+
+    except pycurl.error as e:
+        print("Error:", e)
+        return False
+    finally:
+        c.close()
+
+    return True
 
 
 def remove_nulls(
@@ -70,7 +91,7 @@ def remove_nulls(
                 # Filter out the nones
                 row[column] = [s for s in row[column] if s is not None]
             except KeyError:
-                logging.info(f"No key of '{column}' found in file: {input_path}")
+                print(f"No key of '{column}' found in file: {input_path}")
 
         # Add filtered data row to a list.
         result_filtered.append(row)
