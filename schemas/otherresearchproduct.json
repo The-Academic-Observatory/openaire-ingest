@@ -182,6 +182,28 @@
       "type": "RECORD",
       "fields": [
         {
+          "name": "bipIndicators",
+          "mode": "REPEATED",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "indicator",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "class",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "score",
+              "mode": "NULLABLE",
+              "type": "FLOAT"
+            }
+           ]
+        },
+        {
           "name": "impactMeasures",
           "description": "The impact measures (i.e. popularity)",
           "mode": "NULLABLE",
@@ -468,7 +490,7 @@
     },
     {
       "name": "publicationdate",
-      "description": "Main date of the research product: typically the publication or issued date. In case of a research result with different versions with different dates, the date of the result is selected as the most frequent well-formatted date. If not available, then the most recent and complete date among those that are well-formatted. For statistics, the year is extracted and the result is counted only among the result of that year. Example: Pre-print date: 2019-02-03, Article date provided by repository: 2020-02, Article date provided by Crossref: 2020, OpenAIRE will set as date 2019-02-03, because it\u2019s the most recent among the complete and well-formed dates. If then the repository updates the metadata and set a complete date (e.g. 2020-02-12), then this will be the new date for the result because it becomes the most recent most complete date. However, if OpenAIRE then collects the pre-print from another repository with date 2019-02-03, then this will be the \u201cwinning date\u201d because it becomes the most frequent well-formatted date.",
+      "description": "Main date of the research product: typically the publication or issued date.",
       "mode": "NULLABLE",
       "type": "DATE"
     },

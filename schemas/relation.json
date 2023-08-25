@@ -3,6 +3,7 @@
     "name": "provenance",
     "type": "RECORD",
     "mode": "NULLABLE",
+    "description" : "The reason why OpenAIRE holds the relation",
     "fields": [
       {
         "name": "provenance",
@@ -22,57 +23,43 @@
     "name": "reltype",
     "type": "RECORD",
     "mode": "NULLABLE",
-    "description": "To represent the semantics of a relation between two entities",
+    "description" : "To represent the semantics of a relation between two entities",
     "fields": [
       {
         "name": "name",
         "type": "STRING",
-        "mode": "NULLABLE",
-        "description": "The semantics of the relation (i.e. isAuthorInstitutionOf). "
+        "mode": "NULLABLE"
       },
       {
         "name": "type",
         "type": "STRING",
-        "mode": "NULLABLE",
-        "description": "the type of the relation (i.e. affiliation)"
+        "mode": "NULLABLE"
       }
     ]
   },
   {
     "name": "source",
-    "type": "RECORD",
+    "type": "STRING",
     "mode": "NULLABLE",
-    "description": "The node source in the relation",
-    "fields": [ 
-      {
-        "name": "id",
-        "type": "STRING",
-        "mode": "NULLABLE"        
-      },
-      {
-        "name": "type",
-        "type": "STRING",
-        "mode": "NULLABLE"
-      }
-    ]
+    "description": "The identifier of the source in the relation"
+  },
+  {
+    "name": "sourceType",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "The entity type of the source in the relation"
   },
   {
     "name": "target",
-    "type": "RECORD",
+    "type": "STRING",
     "mode": "NULLABLE",
-    "fields": [
-      {
-        
-        "name": "id",
-        "type": "STRING",
-        "mode": "NULLABLE"
-      },
-      {
-        "name": "type",
-        "type": "STRING",
-        "mode": "NULLABLE"
-      }
-    ]
+    "description" : "The identifier of the target in the relation"
+  },
+  {
+    "name": "targetType",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description" : "The entity type of the target in the relation"
   },
   {
     "name": "validated",

@@ -133,6 +133,28 @@
       "type": "RECORD",
       "fields": [
         {
+          "name": "bipIndicators",
+          "mode": "REPEATED",
+          "type": "RECORD",
+          "fields": [
+            {
+              "name": "indicator",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "class",
+              "mode": "NULLABLE",
+              "type": "STRING"
+            },
+            {
+              "name": "score",
+              "mode": "NULLABLE",
+              "type": "FLOAT"
+            }
+           ]
+        },
+        {
           "name": "impactMeasures",
           "description": "The impact measures (i.e. popularity)",
           "mode": "NULLABLE",
