@@ -1,0 +1,48 @@
+######
+### Openaire Data Dump Ingest
+######
+
+workflow_config:
+  zenodo_url_path: https://zenodo.org/record/8217359 # link to the data dump that you want to download and ingest
+  release_date: 20230817 # Has to be in format YYMMDD
+
+  data_path: /home/alexmassen-hane/Openaire-Ingest/data
+
+  # list of tables that you wish to downlaod and process
+  tables: 
+
+    relation: 
+      num_parts: 13
+      
+    publication:
+      remove_nulls: source
+      num_parts: 12
+
+    dataset:
+      num_parts: 2
+
+    community_infranstructures:
+      num_parts: 1
+
+    otherresearchproduct:
+      alt_name: otherresearchproduct_
+      num_parts: 1
+
+    software:
+      num_parts: 1
+
+    project: 
+      num_parts: 1
+    
+    organization:
+      num_parts: 1
+
+    datasource: 
+      num_parts: 1
+  
+cloud_workspace:
+  project_id: alex-dev-356105
+  dataset_id: openaire
+  bucket_id: openaire_data
+  data_location: us
+

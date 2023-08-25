@@ -1,7 +1,11 @@
-####
-
 # data folder
 /data
 
 # Silly inclusive mac files
 .DS_store
+
+# Logs from scripts
+*.log
+
+# Python cache
+openaire/__pycache__
