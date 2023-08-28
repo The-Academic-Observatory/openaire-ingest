@@ -16,11 +16,11 @@
 
 import os
 import re
+import shutil
 import argparse
 from typing import Optional
 from google.cloud import bigquery
 from google.cloud.bigquery import SourceFormat
-
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from openaire.config import create_config
@@ -52,10 +52,15 @@ class OpenaireWorkflow:
     def download(self):
         """Download files for a list of given tables from Zenodo."""
 
+        print(f"----------------------------------------------------")
+        print(f"Download - Downloads the *.tar parts for each table from Zenodo.")
+
         # Loop though the tables and download the part table files.
         for table in self.tables:
             for url, output_path in table.download_paths.items():
                 download_from_zenodo(url=url, output_path=output_path)
+
+        print(f"----------------------------------------------------")
 
     def decompress(self):
         """Expand the downloaded files for each table."""
@@ -145,7 +150,7 @@ class OpenaireWorkflow:
                 blob_names=uri_part_list,
             )
 
-            assert success, f"Table {table.name} files were not successfully uploaded to GCS."
+            assert success, f"Table {table.name}: Files were not successfully uploaded to GCS."
 
         print(f"----------------------------------------------------")
 
@@ -153,7 +158,7 @@ class OpenaireWorkflow:
         """Ingest the tables from GCS to BQ."""
 
         print(f"----------------------------------------------------")
-        print(f"BQ Import - Import tables from Google Cloud Storage to Big Query.")
+        print(f"BQ Import - Import tables from Google Cloud Storage to Bigquery.")
 
         bq_create_dataset(
             self.cloud_workspace.project_id,
@@ -177,6 +182,23 @@ class OpenaireWorkflow:
     def cleanup(self):
         """Remove all of locally downlaoded and decompressed files."""
 
+        print(f"----------------------------------------------------")
+        print(f"Cleanup - Remove the downloaded and decompressed files for all tables.")
+
+        data_dir = os.path.join(self.workflow_config.data_path, 'data')
+
+        print(f"Removing data directory: {data_dir}")
+        
+        shutil.rmtree(self.workflow_config.download_folder)
+        shutil.rmtree(self.workflow_config.decompress_folder)
+        os.rmdir(data_dir)
+
+        assert not os.path.exists(
+            data_dir
+        ), f"Data path directory still exists: {data_dir}"
+
+        print(f"----------------------------------------------------")
+
 
 def main(config_path: str):
     ###############################################################################
@@ -193,14 +215,18 @@ def main(config_path: str):
     assert os.path.exists(config_path), f"Config path does not exist! {config_path}"
     workflow = OpenaireWorkflow(config_path)
 
+    print(f"Starting the OpenAIRE Workflow.")
+
     # Tasks
     workflow.setup()
-    workflow.download()
-    workflow.decompress()
-    workflow.transform()
-    workflow.gcs_upload()
-    workflow.bq_import()
+    # workflow.download()
+    # workflow.decompress()
+    # workflow.transform()
+    # workflow.gcs_upload()
+    # workflow.bq_import()
     workflow.cleanup()
+
+    print(f"Workflow is finished!")
 
 
 if __name__ == "__main__":

@@ -1,51 +1,35 @@
 # OpenAIRE Data Ingest
 
-This repository is for ingesting the OpenAIRE data dump into Bigquery. Download and decompression scripts are made for unix systems with use of Bash, Curl and Python v3.8 .
+This repository is for ingesting the OpenAIRE data dump into Google Bigquery. It is based off of how the Observatory Platform runs the Academic Observatory workflows. It has been reworked to make it easier to understand the task flow and to use it when future versions of the data dumps are released. 
 
-## Downloading
+## Tables
 
-The current tables (v5.0.0, December 30 2022) are:
+The current tables (v6.0.0, August 17 2023) are:
 
 - communities_infrastructures
 - organization
 - software
 - project
-- otherresearchproduct
+- otherresearchproduct_1 (just one part)
 - datasource
 - dataset (2 parts, dataset_1.tar and dataset_2.tar)
-- publication (11 parts, from publciation_1 to publication_11.tar)
-- relation (11 parts, from relation_1.tar to relation_11.tar)
+- publication (12 parts, from publciation_1 to publication_12.tar)
+- relation (13 parts, from relation_1.tar to relation_13.tar)
 
 Please read the following for more information:
 
-https://doi.org/10.5281/zenodo.7488618
+https://doi.org/10.5281/zenodo.8238874
 
-To download the OpenAIRE data dump from Zenodo, please run the following bash script:
 
-`./download.sh`
+## Installation
 
-This will download all of the 9 Openaire tables into the following folder data/donwload/{table_name}\_{#}.tar using Curl sequentially and may take some time as Zenodo is fairly slow.
+Before running the workflow, please make sure you install the following packages:
 
-## Decompress
+On debian linux:
 
-To decompress the archived tables, please run the script:
+`sudo apt install libcurl4-openssl-dev libssl-dev`
 
-`./decompress`
-
-and will place all of the decompressed files into data/decompress/{table_name}. Tables come in parts from the archive, for example
-
-```
-data/decompress/relation/part_00000.txt.gz
-data/decompress/relation/part_00001.txt.gz
-...
-...
-```
-
-This decompression script will NOT delete the orginal \*.tar archives so be wary of space limitations.
-
-## Running the Python script
-
-Before running the python script, please make a separate python 3.8 virtual environment and install the required packages.
+Next, create a Python 3.8 virtual environment and install the required packages.
 
 Creating the python virtual environment:
 
@@ -59,57 +43,71 @@ Install the required packages:
 
 `pip install -r requirements.txt`
 
-The python script "main.py" contains functions for uploading to Google Cloud Storage and transfering to Google Bigquery. It contains a list of tables to loop through for uploading and tranfering into Google. If you do not wish to inlcude all the tables, please edit "list_of_tables" as needed.
+## Config file
 
-You will also need to create a Google Cloud Storage bucket and Google Bigquery dataset for holding the Openaire data, both with the name of "openaire_data". You will also need to store this information as an environment variable in your bash shell so that the python script can pick it up. Run each of these lines separately:
+### Workflow
 
-`PROJECT_ID='<your google project ID>'`
+The configuration file for the workflow is stored in the `config.yaml` file.
 
-`BUCKET_NAME='openaire_data'`
+Please look through and edit the parameters as needed, for example; `zenodo_url_path` and the `release_date`, as these will change for each release of the data dump.
 
-`DATSET_NAME='openaire_data'`
+You will need to set an appropriate `working_path` of where the workflow will download and decompress the OpenAIRE data dump. The workflow requires approximately 500Gb of free disk space to run. You will also need to provide an absolute path to the credential file for the service account that can access Google's Cloud services. This is stored under the `google_secret_path` variable in the config file. Please see the following to assist with creating a Google service account with the required permissions for the workflow:
 
-### Upload to Google Cloud Storage
+https://docs.observatory.academy/en/latest/tutorials/deploy_terraform.html#prepare-google-cloud-project
 
-The function that uploads the \*.txt.gz and \*.json.gz part table files to Google Cloud Storage is upload_json_to_gcs and loops through all of the available part files in the data/decompress/{table_name} path.
+The list of tables that will be processed by the workflow is under the "tables" section of the config file. This is where the parameters for each table is set:
 
-It has some logic in it that will look at the exisiting files in Google Cloud Storage bucket and will not reupload them if they are already present. However, if the upload process is interrupted, then you may want to delete the last file it uploaded manually and restart the upload from that file.
+- The name of the table
+  - num_parts: The number of tar parts of the table on Zenodo.
+  - alt_name: Optional. Alternate name of the part files on Zenodo, if any.
+  - remove_nulls: Optional. Suspect columns where nulls are required to be removed. 
 
-### Preprocessing step
+### Cloud Workspace
+
+This part of the config file defines the parameters used for connecting to the Google Cloud services. 
+
+- project_id: The Google project ID of there the data will be uploaded/imported to.
+- dataset_id: Name of the dataset in Google Bigquery where the final tables will be imported. This will be created if it doesn't already exist.
+- bucket_id: The name of the Google Cloud Storage bucket of where the data will be imported. 
+- bucket_folder: Path in the google cloud bucket of where the donwloaded Openaire data will be uploaded to.
+- data_location: Location of the Google Cloud data centre's of where the data will be held.
+
+
+## Running the workflow
+
+To run the workflow, it is recommended that you run it in the backgroud, like so
+
+`python3 main.py --config-path=config.yaml &> workflow_output.log &`
+
+and then view the status of the workflow using the tail command,
+
+`tail -f workflow_output.log`
+
+The following are the tasks that the workflow performs:
+
+1. Setup: The workflow will initialise the parameters for the workflow.
+2. Download: Download the required part *.tar files of the table from Zenodo.
+3. Decompress: Unpacks the \*.tar files to get the part-\*\*\*\*\*.json.gz files.
+4. Transform: Removes any potential nulls/Nones from suspect columns defined in the config file and outputs them as part-\*\*\*\*\*_NR.json.gz, the 'NR' stands for 'nulls removed'. 
+5. GCS Upload: Uploads the part files for each table to the bucket_id and bucket_folder provided.
+6. BQ Import: Imports the table data from GCS to BQ, using the schemas defined in "openaire/schemas/".
+7. Cleanup: Removes downloaded and decompressed files to free up disk space.
 
 Please note that the "publication" table had issues in the "source" field when importing. Bigquery was not able to import the table with entries of:
 
 `["Crossref",null]`
 
-as there were both strings and nulls in the array. The python script will recognise the "publication" table and loop over all of the part table files and remove the unnecessary nulls from the "source" field. The output of this preprocessing step effectively duplicates the part table file without the nulls present and are stored as, for example:
-
-/data/decompress/publication/part_00010_NR.txt.gz
-
-where the "NR" stands for "nulls removed". These filtered version of the part table files are uploaded to GCS instead of the orginal part table files.
-
-### Transferiing to Google Bigquery
-
-Each table requires a schema for the data to be transfered into Bigquery. DO NOT rely on Google's "Auto detect" feature of the fields for the data. It can sometimes miss fields and loss of the data can occur.
-
-The schemas for all of the tables are present in the "schemas" directory of this repo.
-
-Although it has been implimented in the python script, I do not recommend using it to import the Openaire tables using the Google API. It is incredibly slow and has chances of errors if the process is interrupted, which is why it has been commented out.
-
-Instead, use the web GUI of Bigquery to import the tables from GCS using a pattern match on all of the part table files, such as
-
-`openaire_data/relation/part-*.json.gz`
-
-Name the table appropriately and make sure that the correct schema is used for the table.
+as there were both strings and nulls in the list. The source field is defined in the config.yaml file and the workflow will automatically process and use the cleaned data for the import to Bigquery.
 
 ## Schemas
 
 Direct schemas (with descriptions) for the following tables are provided on Zenodo:
 
-    - community_infrastructure
-    - datasource
-    - organization
-    - project
-    - relation
+- community_infrastructure
+- datasource
+- organization
+- project
+- relation
 
 The rest of the descriptions for the data for the software, publciation, dataset and otherresearchproduct tables are stored in the results schema since these are merged into a larger relational table. The relevant descriptions have been pulled out from the results schema from Zendo and put into the software, publication, dataset and otherresearchproduct schema files.
 
@@ -118,7 +116,3 @@ The following package was used to assist with making schemas for the Openaire da
 https://github.com/bxparks/bigquery-schema-generator
 
 and were edited as necessary.
-
-# NEED TO INSTALL FIRST
-
-sudo apt install libcurl4-openssl-dev libssl-dev
