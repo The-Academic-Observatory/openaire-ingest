@@ -4,7 +4,7 @@
 
 workflow_config:
   zenodo_url_path: https://zenodo.org/record/8217359 # link to the data dump that you want to download and ingest
-  release_date: "20230817" # Has to be in format YYMMDD
+  release_date: "20230817" # Has to be in format YYYYMMDD
 
   # Path to where the downloaded data will be stored locally.
   working_path: /home/alexmassen-hane/repos/Openaire-Ingest
@@ -16,15 +16,15 @@ workflow_config:
     # remove_nulls: source, testing, list # List of columns to go through to remove unnecessary nulls from lists, e.g. ["Crossref",null]
     # alt_name: communities_infrastructures # Alternative name on Zenodo
 
-    software:
-      num_parts: 1
+    # software:
+    #   num_parts: 1
 
     # relation:
     #   num_parts: 13
 
-    # publication:
-    #   remove_nulls: source
-    #   num_parts: 12
+    publication:
+      remove_nulls: source
+      num_parts: 12
 
     # dataset:
     #   num_parts: 2

@@ -9,3 +9,6 @@
 
 # Python cache
 openaire/__pycache__
+
+# VS Code config
+.vscode

@@ -22,12 +22,12 @@ from google.cloud import bigquery
 from google.cloud.bigquery import SourceFormat
 
 from multiprocessing import cpu_count
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from openaire.config import create_config
 from openaire.gcs import gcs_upload_files
 from openaire.bigquery import bq_create_dataset, bq_load_table
-from openaire.data import download_from_zenodo
+from openaire.data import download_from_zenodo, remove_nulls
 from openaire.files import decompress_tar_gz, get_chunks
 
 
@@ -71,8 +71,13 @@ class OpenaireWorkflow:
     def decompress(self):
         """Expand the downloaded files for each table."""
 
+        print(f"----------------------------------------------------")
+        print(f" Decompress - Decompress the table *.tar parts.")
+
         # Decompress each of the downloaded files.
         for table in self.tables:
+            print(f"Processing table: {table.name}")
+
             for download_files in table.download_paths.values():
                 decompress_tar_gz(file_path=download_files, extract_path=table.decompress_folder)
 
@@ -88,18 +93,47 @@ class OpenaireWorkflow:
     def transform(self):
         """Transform - remove nulls from selected top level columns in the data."""
 
-        # TODO: Make parallel
+        print(f"----------------------------------------------------")
+        print(f" Transform - Removing nulls from suspect columns.")
 
+        # Use list of gz parts from previous decompress step
         for table in self.tables:
-            print(table.name)
-            print(table.schema_path)
-            print(table.local_part_list_gz)
+            print(f"Processing table: {table.name}")
+            print(f"Files to process: {table.local_part_list_gz}")
 
-            if table.remove_nulls is not None:
-                print(table.remove_nulls)
+            if table.remove_nulls:
+                part_list_gz_NR = []
+                for i, chunk in enumerate(
+                    get_chunks(input_list=table.local_part_list_gz, chunk_size=self.max_processes)
+                ):
+                    with ProcessPoolExecutor(max_workers=self.max_processes) as executor:
+                        futures = {}
+                        for file_path in chunk:
+                            basename = f"{os.path.basename(file_path).split('.')[0]}_NR.json.gz"
+                            output_path = os.path.join(os.path.dirname(file_path), basename)
+
+                            future = executor.submit(remove_nulls, file_path, table.remove_nulls, output_path)
+                            futures[future] = output_path
+
+                        for future in as_completed(futures):
+                            output_path = futures[future]
+                            part_list_gz_NR.append(output_path)
+                            print(f"Finished removing nulls from column {table.remove_nulls}: {output_path}")
+
+                assert len(table.local_part_list_gz) == len(
+                    part_list_gz_NR
+                ), f"Number of part gz files and NR are not the same: {len(table.local_part_list_gz)} vs {len(part_list_gz_NR)}"
+
+                # Overwrite with new list of processed files.
+                table.local_part_list_gz = part_list_gz_NR
+
+        print(f"----------------------------------------------------")
 
     def gcs_upload(self):
-        """Uplaod local files to GCS bucket."""
+        """Upload local files to GCS bucket."""
+
+        print(f"----------------------------------------------------")
+        print(f"GCS Upload - Uploading table files to Google Cloud Storage.")
 
         for table in self.tables:
             # Get parts list incase the previous step was not run.
@@ -123,8 +157,13 @@ class OpenaireWorkflow:
 
             assert success, f"Table {table.name} files were not successfully uploaded to GCS."
 
+        print(f"----------------------------------------------------")
+
     def bq_import(self):
         """Ingest the tables from GCS to BQ."""
+
+        print(f"----------------------------------------------------")
+        print(f"BQ Import - Import tables from Google Cloud Storage to Big Query.")
 
         bq_create_dataset(
             self.cloud_workspace.project_id,
@@ -141,6 +180,8 @@ class OpenaireWorkflow:
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
                 source_format=SourceFormat.NEWLINE_DELIMITED_JSON,
             )
+
+        print(f"----------------------------------------------------")
 
     def cleanup(self):
         """Remove any all of locally downlaoded, decompressed and transformed files."""
@@ -164,11 +205,11 @@ def main(config_path: str):
     # Tasks
     workflow.setup()
     # workflow.download()
-    # workflow.decompress()
-    # workflow.transform()
-    # workflow.gcs_upload()
+    workflow.decompress()
+    workflow.transform()
+    workflow.gcs_upload()
     workflow.bq_import()
-    workflow.cleanup()
+    # workflow.cleanup()
 
 
 if __name__ == "__main__":
