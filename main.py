@@ -185,17 +185,15 @@ class OpenaireWorkflow:
         print(f"----------------------------------------------------")
         print(f"Cleanup - Remove the downloaded and decompressed files for all tables.")
 
-        data_dir = os.path.join(self.workflow_config.data_path, 'data')
+        data_dir = os.path.join(self.workflow_config.data_path, "data")
 
         print(f"Removing data directory: {data_dir}")
-        
+
         shutil.rmtree(self.workflow_config.download_folder)
         shutil.rmtree(self.workflow_config.decompress_folder)
         os.rmdir(data_dir)
 
-        assert not os.path.exists(
-            data_dir
-        ), f"Data path directory still exists: {data_dir}"
+        assert not os.path.exists(data_dir), f"Data path directory still exists: {data_dir}"
 
         print(f"----------------------------------------------------")
 
@@ -219,11 +217,11 @@ def main(config_path: str):
 
     # Tasks
     workflow.setup()
-    # workflow.download()
-    # workflow.decompress()
-    # workflow.transform()
-    # workflow.gcs_upload()
-    # workflow.bq_import()
+    workflow.download()
+    workflow.decompress()
+    workflow.transform()
+    workflow.gcs_upload()
+    workflow.bq_import()
     workflow.cleanup()
 
     print(f"Workflow is finished!")
