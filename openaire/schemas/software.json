@@ -128,7 +128,7 @@
     "name": "dateofcollection",
     "description": "When OpenAIRE collected the record the last time",
     "mode": "NULLABLE",
-    "type": "DATE"
+    "type": "STRING"
   },
   {
     "name": "language",
@@ -485,7 +485,7 @@
     "name": "embargoenddate",
     "description": "Date when the embargo ends and this result turns Open Access",
     "mode": "NULLABLE",
-    "type": "DATE"
+    "type": "STRING"
   },
   {
     "name": "author",

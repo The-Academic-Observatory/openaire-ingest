@@ -54,7 +54,6 @@ class WorkflowConfig:
     release_date: str
     download_folder: str
     decompress_folder: str
-    transform_folder: str
     tables: List[Table]
 
 
@@ -90,15 +89,12 @@ def create_config(config_path: str) -> Tuple[CloudWorkspace, WorkflowConfig]:
     data_path = os.path.join(working_path, "data")
     pathlib.Path(data_path).mkdir(parents=True, exist_ok=True)
 
-    # Create download, decompress and transform folder.
+    # Create download  and decompress folder.
     download_folder = os.path.join(data_path, "download")
     pathlib.Path(download_folder).mkdir(parents=True, exist_ok=True)
 
     decompress_folder = os.path.join(data_path, "decompress")
     pathlib.Path(decompress_folder).mkdir(parents=True, exist_ok=True)
-
-    transform_folder = os.path.join(data_path, "transform")
-    pathlib.Path(transform_folder).mkdir(parents=True, exist_ok=True)
 
     # Loop through and create the Table objects
 
@@ -129,25 +125,23 @@ def create_config(config_path: str) -> Tuple[CloudWorkspace, WorkflowConfig]:
         # Create table objects
         table = Table(
             name=name,
-            full_table_id=f"{cloud_workspace.project_id}.{cloud_workspace.dataset_id}.{name}",
+            full_table_id=f"{cloud_workspace.project_id}.{cloud_workspace.dataset_id}.{name}{release_date}",
             zenodo_url_path=config_data["workflow_config"]["zenodo_url_path"],
             num_parts=params["num_parts"],
             alt_name=alt_name,
             remove_nulls=remove_nulls,
             download_folder=download_folder,
             decompress_folder=decompress_folder,
-            transform_folder=transform_folder,
             gcs_uri_pattern=gcs_uri_pattern,
         )
         tables.append(table)
 
     workflow_config = WorkflowConfig(
-        data_path=config_data["workflow_config"]["data_path"],
+        data_path=config_data["workflow_config"]["working_path"],
         zenodo_url_path=config_data["workflow_config"]["zenodo_url_path"],
         release_date=release_date,
         download_folder=download_folder,
         decompress_folder=decompress_folder,
-        transform_folder=transform_folder,
         tables=tables,
     )
 

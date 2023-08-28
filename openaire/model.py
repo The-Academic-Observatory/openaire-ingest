@@ -29,7 +29,6 @@ class Table:
         full_table_id: str,
         download_folder: str,
         decompress_folder: str,
-        transform_folder: str,
         gcs_uri_pattern: str,
         alt_name: Optional[str] = None,
         remove_nulls: Optional[Union[str, List[str]]] = None,
@@ -50,7 +49,6 @@ class Table:
         self.download_folder = os.path.join(download_folder, name)
         self.decompress_folder = os.path.join(decompress_folder)
         self.part_location = os.path.join(decompress_folder, name)
-        self.transform_folder = os.path.join(transform_folder, name)
 
         self.zenodo_name = alt_name if alt_name else name
 
@@ -77,9 +75,3 @@ class Table:
             )
 
         return downloads
-
-    @property
-    def transform_pattern(self) -> str:
-        """Return a glob pattern of the transformed files."""
-
-        return os.path.join(self.transform_folder, self.name, "part_*.json.gz")

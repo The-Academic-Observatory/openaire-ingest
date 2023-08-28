@@ -506,7 +506,7 @@
       "name": "embargoenddate",
       "description": "Date when the embargo ends and this result turns Open Access",
       "mode": "NULLABLE",
-      "type": "DATE"
+      "type": "STRING"
     },
     {
       "name": "author",

@@ -15,13 +15,12 @@
 # Author: Alex Massen-Hane
 
 import os
+import re
 import argparse
 from typing import Optional
-
 from google.cloud import bigquery
 from google.cloud.bigquery import SourceFormat
 
-from multiprocessing import cpu_count
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 from openaire.config import create_config
@@ -33,14 +32,14 @@ from openaire.files import decompress_tar_gz, get_chunks
 
 class OpenaireWorkflow:
 
-    """Openaire workflow"""
+    """Openaire ingest workflow"""
 
     def __init__(
         self,
-        max_processes=cpu_count(),
+        max_processors: int = 7,
         config_path: Optional[str] = "config.yaml",
     ):
-        self.max_processes = max_processes
+        self.max_processors = max_processors
         self.config_path = config_path
 
     def setup(self):
@@ -53,26 +52,16 @@ class OpenaireWorkflow:
     def download(self):
         """Download files for a list of given tables from Zenodo."""
 
-        # TODO: Make parallel
-
-        # Loop though the tables and download the part table files in parallel.
+        # Loop though the tables and download the part table files.
         for table in self.tables:
             for url, output_path in table.download_paths.items():
                 download_from_zenodo(url=url, output_path=output_path)
-
-            # # Download files in batches if possible.
-            # for i, chunk in enumerate(get_chunks(input_list=table.download_paths, chunk_size=self.max_processes)):
-            #     with ProcessPoolExecutor(max_workers=self.max_processes) as executor:
-
-            #         futures = []
-            #         for datafile in chunk:
-            #             futures.append(executor.submit(download, input_path, upsert_path))
 
     def decompress(self):
         """Expand the downloaded files for each table."""
 
         print(f"----------------------------------------------------")
-        print(f" Decompress - Decompress the table *.tar parts.")
+        print(f"Decompress - Decompress the table *.tar parts.")
 
         # Decompress each of the downloaded files.
         for table in self.tables:
@@ -85,7 +74,7 @@ class OpenaireWorkflow:
             part_list_gz = [
                 os.path.join(table.part_location, file)
                 for file in os.listdir(table.part_location)
-                if file.endswith(".gz")
+                if re.match(r"part-\d{5}.json.gz", file)
             ]
             part_list_gz.sort()
             table.local_part_list_gz = part_list_gz
@@ -94,19 +83,28 @@ class OpenaireWorkflow:
         """Transform - remove nulls from selected top level columns in the data."""
 
         print(f"----------------------------------------------------")
-        print(f" Transform - Removing nulls from suspect columns.")
+        print(f"Transform - Removing nulls from suspect columns.")
 
         # Use list of gz parts from previous decompress step
         for table in self.tables:
+            # Add the list of parts to the table metadata object
+            part_list_gz = [
+                os.path.join(table.part_location, file)
+                for file in os.listdir(table.part_location)
+                if re.match(r"part-\d{5}.json.gz", file)
+            ]
+            part_list_gz.sort()
+            table.local_part_list_gz = part_list_gz
+
             print(f"Processing table: {table.name}")
             print(f"Files to process: {table.local_part_list_gz}")
 
             if table.remove_nulls:
                 part_list_gz_NR = []
-                for i, chunk in enumerate(
-                    get_chunks(input_list=table.local_part_list_gz, chunk_size=self.max_processes)
-                ):
-                    with ProcessPoolExecutor(max_workers=self.max_processes) as executor:
+                for i, chunk in enumerate(get_chunks(input_list=table.local_part_list_gz, chunk_size=7)):
+                    with ProcessPoolExecutor(max_workers=7) as executor:
+                        print(f"In chunk {i}: {chunk}")
+
                         futures = {}
                         for file_path in chunk:
                             basename = f"{os.path.basename(file_path).split('.')[0]}_NR.json.gz"
@@ -136,14 +134,6 @@ class OpenaireWorkflow:
         print(f"GCS Upload - Uploading table files to Google Cloud Storage.")
 
         for table in self.tables:
-            # Get parts list incase the previous step was not run.
-            part_list_gz = [
-                os.path.join(table.part_location, file)
-                for file in os.listdir(table.part_location)
-                if file.endswith(".gz")
-            ]
-            part_list_gz.sort()
-
             uri_part_list = [
                 f"{self.cloud_workspace.bucket_folder}/{table.name}/{os.path.basename(file)}"
                 for file in table.local_part_list_gz
@@ -151,7 +141,7 @@ class OpenaireWorkflow:
 
             success = gcs_upload_files(
                 bucket_name=self.cloud_workspace.bucket_id,
-                file_paths=part_list_gz,
+                file_paths=table.local_part_list_gz,
                 blob_names=uri_part_list,
             )
 
@@ -181,10 +171,11 @@ class OpenaireWorkflow:
                 source_format=SourceFormat.NEWLINE_DELIMITED_JSON,
             )
 
+            print(f"Done uploading to table! {table.full_table_id}")
         print(f"----------------------------------------------------")
 
     def cleanup(self):
-        """Remove any all of locally downlaoded, decompressed and transformed files."""
+        """Remove all of locally downlaoded and decompressed files."""
 
 
 def main(config_path: str):
@@ -204,18 +195,22 @@ def main(config_path: str):
 
     # Tasks
     workflow.setup()
-    # workflow.download()
+    workflow.download()
     workflow.decompress()
     workflow.transform()
     workflow.gcs_upload()
     workflow.bq_import()
-    # workflow.cleanup()
+    workflow.cleanup()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--config-path", type=str, required=False, help="Path to the configuration file", default="config.yaml"
+        "--config-path",
+        type=str,
+        required=False,
+        help="Path to the configuration file",
+        default="config.yaml",
     )
     args = parser.parse_args()
 

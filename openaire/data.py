@@ -91,7 +91,8 @@ def remove_nulls(
                 # Filter out the nones
                 row[column] = [s for s in row[column] if s is not None]
             except KeyError:
-                print(f"No key of '{column}' found in file: {input_path}")
+                pass
+                # print(f"No key of '{column}' found in file: {input_path}")
 
         # Add filtered data row to a list.
         result_filtered.append(row)

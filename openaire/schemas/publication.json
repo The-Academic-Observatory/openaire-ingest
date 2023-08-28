@@ -161,7 +161,7 @@
       },
       {
         "name": "conferencedate",
-        "type": "DATE",
+        "type": "STRING",
         "mode": "NULLABLE"
       }
     ]
@@ -213,7 +213,7 @@
   {
     "name": "dateofcollection",
     "description": "When OpenAIRE collected the record the last time",
-    "type": "DATE",
+    "type": "STRING",
     "mode": "NULLABLE"
   },
   {
@@ -224,7 +224,7 @@
   {
     "name": "embargoenddate",
     "description": "Date when the embargo ends and this result turns Open Access",
-    "type": "DATE",
+    "type": "STRING",
     "mode": "NULLABLE"
   },
   {
