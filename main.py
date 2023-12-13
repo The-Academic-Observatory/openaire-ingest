@@ -30,6 +30,11 @@ from openaire.data import download_from_zenodo, remove_nulls
 from openaire.files import decompress_tar_gz, get_chunks
 
 
+FILENAME_PATTERN = (
+    r"^part-\d{5}\.json\.gz$|^part-\d{5}-[\d|\w]{8}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{12}-[\d|\w]{4}\.json\.gz$"
+)
+
+
 class OpenaireWorkflow:
 
     """Openaire ingest workflow"""
@@ -79,7 +84,7 @@ class OpenaireWorkflow:
             part_list_gz = [
                 os.path.join(table.part_location, file)
                 for file in os.listdir(table.part_location)
-                if re.match(r"part-\d{5}.json.gz", file)
+                if re.match(FILENAME_PATTERN, file)
             ]
             part_list_gz.sort()
             table.local_part_list_gz = part_list_gz
@@ -96,7 +101,7 @@ class OpenaireWorkflow:
             part_list_gz = [
                 os.path.join(table.part_location, file)
                 for file in os.listdir(table.part_location)
-                if re.match(r"part-\d{5}.json.gz", file)
+                if re.match(FILENAME_PATTERN, file)
             ]
             part_list_gz.sort()
             table.local_part_list_gz = part_list_gz

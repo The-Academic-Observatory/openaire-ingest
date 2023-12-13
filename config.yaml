@@ -2,8 +2,8 @@
 # Openaire Ingest Workflow Config File
 #######################################
 
-workflow_config:
-  zenodo_url_path: https://zenodo.org/record/8217359 # link to the data dump that you want to download and ingest
+workflow_config:  
+  zenodo_url_path: https://zenodo.org/records/10037121 # link to the data dump that you want to download and ingest
   release_date: "20230817" # Has to be in format YYYYMMDD
 
   # Path to where the data will be stored for the workflow
