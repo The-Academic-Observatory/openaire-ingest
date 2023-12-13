@@ -26,7 +26,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from openaire.config import create_config
 from openaire.gcs import gcs_upload_files
 from openaire.bigquery import bq_create_dataset, bq_load_table
-from openaire.data import download_from_zenodo, remove_nulls
+from openaire.data import download_from_zenodo_wget, remove_nulls
 from openaire.files import decompress_tar_gz, get_chunks
 
 
@@ -63,7 +63,7 @@ class OpenaireWorkflow:
         # Loop though the tables and download the part table files.
         for table in self.tables:
             for url, output_path in table.download_paths.items():
-                download_from_zenodo(url=url, output_path=output_path)
+                download_from_zenodo_wget(url=url, output_path=output_path)
 
         print(f"----------------------------------------------------")
 

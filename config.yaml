@@ -7,7 +7,7 @@ workflow_config:
   release_date: "20230817" # Has to be in format YYYYMMDD
 
   # Path to where the data will be stored for the workflow
-  working_path: /home/alexmassen-hane/repos/Openaire-Ingest
+  working_path: /home/alexmassen-hane/repos/openaire-ingest
 
   # Absolute path of where the secret file for the service account for this workflow to use
   google_secret_path: 

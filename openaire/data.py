@@ -20,48 +20,38 @@
 # Functions relevent for cleaning the Openaire data.
 
 import os
-import pycurl
-from io import BytesIO
-import subprocess
+import sys
+import wget
 from typing import Set
 from openaire.files import load_jsonl_gz, save_jsonl_gz
 
 
-def download_from_zenodo(url: str, output_path: str):
-    """Download a single file from Zenodo using the pycurl library.
-    If the file has already been downloaded previously, it will not download it again.
+def download_from_zenodo_wget(url: str, output_path: str):
+    """Download a single file from Zenodo using the wget library.
+
 
     :param url: Url of the file to download.
     :param output_path: Path of the download on disk.
     :return: True if downloaded successfuflly, otherwise false.
     """
 
-    c = pycurl.Curl()
-    c.setopt(pycurl.URL, url)
-
     print(f"Downloading file {os.path.basename(output_path)} to {url}")
 
+    def bar_custom(current, total, width=80):
+        print("Downloading: %d%% [%d / %d] bytes" % (current / total * 100, current, total))
+
     try:
-        # Check fiels already exists.
+        # Check files already exists.
         if os.path.exists(output_path):
             print(f"Found old file. Deleting previous download and starting again.")
             os.remove(output_path)
 
-        # Write download to file.
-        with open(output_path, "wb") as f:
-            c.setopt(pycurl.WRITEDATA, f)
-            c.perform()
+        # Download using Wget
+        wget.download(url, out=os.path.basename(output_path), bar=bar_custom)
 
-        if c.getinfo(pycurl.HTTP_CODE) == 200 or c.getinfo(pycurl.HTTP_CODE) == 206:
-            print(f"File successfully resumed and downloaded: {url}")
-        else:
-            print(f"Failed to download the file. HTTP status code: {c.getinfo(pycurl.HTTP_CODE)} url: {url}")
-
-    except pycurl.error as e:
-        print("Error:", e)
+    except:
+        print(f"File {url} was unable to be downloaded.")
         return False
-    finally:
-        c.close()
 
     return True
 
