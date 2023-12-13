@@ -32,13 +32,15 @@ def download_from_zenodo_wget(url: str, output_path: str):
 
     :param url: Url of the file to download.
     :param output_path: Path of the download on disk.
-    :return: True if downloaded successfuflly, otherwise false.
+    :return: True if downloaded successfuflly, otherwise False.
     """
 
-    print(f"Downloading file {os.path.basename(output_path)} to {url}")
+    print(f"\nDownloading file {url} to {output_path}")
 
     def bar_custom(current, total, width=80):
-        print("Downloading: %d%% [%d / %d] bytes" % (current / total * 100, current, total))
+        progress_message = f"Downloading: {current / total * 100} [{ current} / {total} ] bytes"
+        sys.stdout.write("\r" + progress_message)
+        sys.stdout.flush()
 
     try:
         # Check files already exists.
