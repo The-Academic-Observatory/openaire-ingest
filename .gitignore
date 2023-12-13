@@ -12,3 +12,6 @@ openaire/__pycache__
 
 # VS Code config
 .vscode
+
+# temp files for wget
+*.tmp

@@ -23,11 +23,19 @@ https://doi.org/10.5281/zenodo.8238874
 
 ## Installation
 
-Before running the workflow, please make sure you install the following packages:
+Before running the workflow, please make sure you install Python 3.8 from deadsnakes. An helpful guide is here:
 
-On debian linux:
+https://www.makeuseof.com/install-python-ubuntu/
 
-`sudo apt install libcurl4-openssl-dev libssl-dev`
+On Ubuntu 22.04:
+
+`sudo apt install software-properties-common -y`
+
+`sudo add-apt-repository ppa:deadsnakes/ppa`
+
+`sudo apt update`
+
+`sudo apt install python3.8 python3.8-venv -y`
 
 Next, create a Python 3.8 virtual environment and install the required packages.
 

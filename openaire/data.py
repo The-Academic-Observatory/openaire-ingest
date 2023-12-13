@@ -47,7 +47,7 @@ def download_from_zenodo_wget(url: str, output_path: str):
             os.remove(output_path)
 
         # Download using Wget
-        wget.download(url, out=os.path.basename(output_path), bar=bar_custom)
+        wget.download(url, out=output_path, bar=bar_custom)
 
     except:
         print(f"File {url} was unable to be downloaded.")
