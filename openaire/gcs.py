@@ -143,7 +143,7 @@ def gcs_upload_files(
     """
 
     func_name = gcs_upload_files.__name__
-    logging.info(f"{func_name}: uploading files")
+    print(f"{func_name}: uploading files")
 
     # Assert that files exist
     is_files = [os.path.isfile(file_path) for file_path in file_paths]
@@ -170,7 +170,7 @@ def gcs_upload_files(
         futures_msgs = {}
         for blob_name, file_path in zip(blob_names, file_paths):
             msg = f"{func_name}: bucket_name={bucket_name}, blob_name={blob_name}, file_path={str(file_path)}"
-            logging.info(f"{func_name}: {msg}")
+            print(f"{func_name}: {msg}")
             future = executor.submit(
                 gcs_upload_file,
                 bucket_name=bucket_name,
@@ -186,7 +186,6 @@ def gcs_upload_files(
         # Wait for completed tasks
         results = []
         for future in as_completed(futures):
-            print(f"future type is {type(future)}")
             success, upload = future.result()
             results.append(success)
             msg = futures_msgs[future]

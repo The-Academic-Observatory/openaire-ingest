@@ -26,11 +26,16 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from openaire.config import create_config
 from openaire.gcs import gcs_upload_files
 from openaire.bigquery import bq_create_dataset, bq_load_table
-from openaire.data import download_from_zenodo, remove_nulls
+from openaire.data import download_from_zenodo_wget, remove_nulls
 from openaire.files import decompress_tar_gz, get_chunks
 
 
-class OpenaireWorkflow:
+FILENAME_PATTERN = (
+    r"^part-\d{5}\.json\.gz$|^part-\d{5}-[\d|\w]{8}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{12}-[\d|\w]{4}\.json\.gz$"
+)
+
+
+class OpenAIREWorkflow:
 
     """Openaire ingest workflow"""
 
@@ -58,7 +63,7 @@ class OpenaireWorkflow:
         # Loop though the tables and download the part table files.
         for table in self.tables:
             for url, output_path in table.download_paths.items():
-                download_from_zenodo(url=url, output_path=output_path)
+                download_from_zenodo_wget(url=url, output_path=output_path)
 
         print(f"----------------------------------------------------")
 
@@ -73,13 +78,14 @@ class OpenaireWorkflow:
             print(f"Processing table: {table.name}")
 
             for download_files in table.download_paths.values():
+                print(f"Decompressing file: {download_files}")
                 decompress_tar_gz(file_path=download_files, extract_path=table.decompress_folder)
 
             # Add the list of parts to the table metadata object
             part_list_gz = [
                 os.path.join(table.part_location, file)
                 for file in os.listdir(table.part_location)
-                if re.match(r"part-\d{5}.json.gz", file)
+                if re.match(FILENAME_PATTERN, file)
             ]
             part_list_gz.sort()
             table.local_part_list_gz = part_list_gz
@@ -96,7 +102,7 @@ class OpenaireWorkflow:
             part_list_gz = [
                 os.path.join(table.part_location, file)
                 for file in os.listdir(table.part_location)
-                if re.match(r"part-\d{5}.json.gz", file)
+                if re.match(FILENAME_PATTERN, file)
             ]
             part_list_gz.sort()
             table.local_part_list_gz = part_list_gz
@@ -211,7 +217,7 @@ def main(config_path: str):
 
     # Make sure that the config file exists.
     assert os.path.exists(config_path), f"Config path does not exist! {config_path}"
-    workflow = OpenaireWorkflow(config_path)
+    workflow = OpenAIREWorkflow(config_path)
 
     print(f"Starting the OpenAIRE Workflow.")
 

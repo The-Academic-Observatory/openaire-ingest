@@ -43,7 +43,7 @@ def schema_folder() -> str:
     :return: the path.
     """
 
-    return module_file_path(os.path.join("openaire", "schemas"))
+    return module_file_path(os.path.join("database", "schemas"))
 
 
 def module_file_path(module_path: str, nav_back_steps: int = -1) -> str:

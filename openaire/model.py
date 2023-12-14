@@ -22,7 +22,7 @@ from openaire.files import schema_folder as default_schema_folder
 
 class Table:
 
-    """Table object to metadata about an Openaire table.
+    """Table object to hold information about an OpenAIRE table.
 
     :param name: Name of the table.
     :param num_parts: Number of tar parts of the table on Zenodo data dump.
@@ -31,7 +31,7 @@ class Table:
     :param download_folder: Absolute path to where the part table tars files will be downloaded.
     :param decompress_folder: Absolute path to where the part table tars files will be decompressed.
     :param gcs_uri_pattern: Uri glob pattern of all the part files for the table in GCS.
-    :param alt_name: Altername name of the table part file on Zenodo. e.g. otherresearchproduct_1.tar but only 1 part.
+    :param alt_name: Alternative name of the table part file on Zenodo. e.g. otherresearchproduct_1.tar but only 1 part,
         so the file to download is otherresearchproduct_1.tar
     :param remove_nulls: Columns of where suspect nulls are that cause issues with importing to Bigquery.
     :param local_part_list_gz: List of where all the part files are locally stored (for the upload step).
