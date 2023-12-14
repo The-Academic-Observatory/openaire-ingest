@@ -22,7 +22,7 @@ from openaire.files import schema_folder as default_schema_folder
 
 class Table:
 
-    """Table object to metadata about an Openaire table.
+    """Table object to hold information about an OpenAIRE table.
 
     :param name: Name of the table.
     :param num_parts: Number of tar parts of the table on Zenodo data dump.

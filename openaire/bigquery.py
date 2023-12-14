@@ -77,7 +77,7 @@ def bq_create_dataset(project_id: str, dataset_id: str, location: str, descripti
 
     # Create dataset, if already exists then catch exception
     try:
-        logging.info(f"{func_name}: creating dataset dataset_ref={dataset_ref}")
+        print(f"{func_name}: creating dataset dataset_ref={dataset_ref}")
         ds = client.create_dataset(ds)
     except Conflict as e:
         logging.warning(f"{func_name}: dataset already exists dataset_ref={dataset_ref}, exception={e}")
@@ -134,7 +134,7 @@ def bq_load_table(
 
     for u in uri:
         msg = f"uri={u}, table_id={table_id}, schema_file_path={schema_file_path}, source_format={source_format}"
-        logging.info(f"{func_name}: load bigquery table {msg}")
+        print(f"{func_name}: load bigquery table {msg}")
         assert u.startswith("gs://"), "load_big_query_table: 'uri' must begin with 'gs://'"
 
     assert_table_id(table_id)
@@ -177,7 +177,7 @@ def bq_load_table(
         result = load_job.result()
         state = result.state == "DONE"
 
-        logging.info(f"{func_name}: load bigquery table result.state={result.state}, {msg}")
+        print(f"{func_name}: load bigquery table result.state={result.state}, {msg}")
     except BadRequest as e:
         logging.error(f"{func_name}: load bigquery table failed: {e}.")
         if load_job:

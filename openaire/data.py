@@ -14,11 +14,6 @@
 
 # Author: Alex Massen-Hane
 
-
-### Download function
-
-# Functions relevent for cleaning the Openaire data.
-
 import os
 import sys
 import wget

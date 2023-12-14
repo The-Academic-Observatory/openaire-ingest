@@ -35,7 +35,7 @@ FILENAME_PATTERN = (
 )
 
 
-class OpenaireWorkflow:
+class OpenAIREWorkflow:
 
     """Openaire ingest workflow"""
 
@@ -78,6 +78,7 @@ class OpenaireWorkflow:
             print(f"Processing table: {table.name}")
 
             for download_files in table.download_paths.values():
+                print(f"Decompressing file: {download_files}")
                 decompress_tar_gz(file_path=download_files, extract_path=table.decompress_folder)
 
             # Add the list of parts to the table metadata object
@@ -216,7 +217,7 @@ def main(config_path: str):
 
     # Make sure that the config file exists.
     assert os.path.exists(config_path), f"Config path does not exist! {config_path}"
-    workflow = OpenaireWorkflow(config_path)
+    workflow = OpenAIREWorkflow(config_path)
 
     print(f"Starting the OpenAIRE Workflow.")
 
