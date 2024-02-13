@@ -140,7 +140,7 @@ def create_config(config_path: str) -> Tuple[CloudWorkspace, WorkflowConfig]:
             remove_nulls = None
 
         uri_prefix = f"gs://{cloud_workspace.bucket_id}/{cloud_workspace.bucket_folder}/{name}"
-        gcs_uri_pattern = f"{uri_prefix}/part-*_NR.json.gz" if remove_nulls else f"{uri_prefix}/part-*.json.gz"
+        gcs_uri_pattern = f"{uri_prefix}/*.json.gz"
 
         # Create table objects
         table = Table(

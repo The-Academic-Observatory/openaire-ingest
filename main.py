@@ -150,6 +150,7 @@ class OpenAIREWorkflow:
                 schema_file_path=table.schema_path,
                 write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
                 source_format=SourceFormat.NEWLINE_DELIMITED_JSON,
+                ignore_unknown_values=True
             )
 
             print(f"Done uploading to table! {table.full_table_id}")
