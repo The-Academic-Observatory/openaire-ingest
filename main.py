@@ -14,25 +14,21 @@
 
 # Author: Alex Massen-Hane
 
-import os
-import re
-import shutil
+
 import argparse
+import os
+import shutil
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Optional
+
 from google.cloud import bigquery
 from google.cloud.bigquery import SourceFormat
-from concurrent.futures import ProcessPoolExecutor, as_completed
 
-from openaire.config import create_config
-from openaire.gcs import gcs_upload_files
 from openaire.bigquery import bq_create_dataset, bq_load_table
+from openaire.config import create_config
 from openaire.data import download_from_zenodo_wget, remove_nulls
 from openaire.files import decompress_tar_gz, get_chunks
-
-
-FILENAME_PATTERN = (
-    r"^part-\d{5}\.json\.gz$|^part-\d{5}-[\d|\w]{8}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{12}-[\d|\w]{4}\.json\.gz$"
-)
+from openaire.gcs import gcs_upload_files
 
 
 class OpenAIREWorkflow:
@@ -46,9 +42,6 @@ class OpenAIREWorkflow:
     ):
         self.max_processors = max_processors
         self.config_path = config_path
-
-    def setup(self):
-        """Read in the config file and create the necessary Table and CloudWorkspace objects."""
 
         ### Read in the config file and get the required.
         self.cloud_workspace, self.workflow_config = create_config(self.config_path)
@@ -81,15 +74,6 @@ class OpenAIREWorkflow:
                 print(f"Decompressing file: {download_files}")
                 decompress_tar_gz(file_path=download_files, extract_path=table.decompress_folder)
 
-            # Add the list of parts to the table metadata object
-            part_list_gz = [
-                os.path.join(table.part_location, file)
-                for file in os.listdir(table.part_location)
-                if re.match(FILENAME_PATTERN, file)
-            ]
-            part_list_gz.sort()
-            table.local_part_list_gz = part_list_gz
-
     def transform(self):
         """Transform - remove nulls from selected top level columns in the data."""
 
@@ -98,21 +82,11 @@ class OpenAIREWorkflow:
 
         # Use list of gz parts from previous decompress step
         for table in self.tables:
-            # Add the list of parts to the table metadata object
-            part_list_gz = [
-                os.path.join(table.part_location, file)
-                for file in os.listdir(table.part_location)
-                if re.match(FILENAME_PATTERN, file)
-            ]
-            part_list_gz.sort()
-            table.local_part_list_gz = part_list_gz
-
             print(f"Processing table: {table.name}")
-            print(f"Files to process: {table.local_part_list_gz}")
+            print(f"Files to process: {table.extracted_files}")
 
             if table.remove_nulls:
-                part_list_gz_NR = []
-                for i, chunk in enumerate(get_chunks(input_list=table.local_part_list_gz, chunk_size=7)):
+                for i, chunk in enumerate(get_chunks(input_list=table.extracted_files, chunk_size=7)):
                     with ProcessPoolExecutor(max_workers=7) as executor:
                         print(f"In chunk {i}: {chunk}")
 
@@ -126,15 +100,11 @@ class OpenAIREWorkflow:
 
                         for future in as_completed(futures):
                             output_path = futures[future]
-                            part_list_gz_NR.append(output_path)
                             print(f"Finished removing nulls from column {table.remove_nulls}: {output_path}")
 
-                assert len(table.local_part_list_gz) == len(
-                    part_list_gz_NR
-                ), f"Number of part gz files and NR are not the same: {len(table.local_part_list_gz)} vs {len(part_list_gz_NR)}"
-
-                # Overwrite with new list of processed files.
-                table.local_part_list_gz = part_list_gz_NR
+                assert len(table.extracted_files) == len(
+                    table.transform_files
+                ), f"Number of part gz files and NR are not the same: {len(table.extracted_files)} vs {len(table.transform_files)}"
 
         print(f"----------------------------------------------------")
 
@@ -147,12 +117,12 @@ class OpenAIREWorkflow:
         for table in self.tables:
             uri_part_list = [
                 f"{self.cloud_workspace.bucket_folder}/{table.name}/{os.path.basename(file)}"
-                for file in table.local_part_list_gz
+                for file in table.transform_files
             ]
 
             success = gcs_upload_files(
                 bucket_name=self.cloud_workspace.bucket_id,
-                file_paths=table.local_part_list_gz,
+                file_paths=table.transform_files,
                 blob_names=uri_part_list,
             )
 
@@ -217,12 +187,11 @@ def main(config_path: str):
 
     # Make sure that the config file exists.
     assert os.path.exists(config_path), f"Config path does not exist! {config_path}"
-    workflow = OpenAIREWorkflow(config_path)
+    workflow = OpenAIREWorkflow(config_path=config_path)
 
     print(f"Starting the OpenAIRE Workflow.")
 
     # Tasks
-    workflow.setup()
     workflow.download()
     workflow.decompress()
     workflow.transform()

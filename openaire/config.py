@@ -17,15 +17,17 @@
 
 ### Read in config file and create the cloud workspace data classes.
 
-import os
-import yaml
-import pathlib
 import logging
-import pendulum
+import os
+import pathlib
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Tuple, List
+
+import pendulum
+import yaml
+
 from openaire.model import Table
-from dataclasses import dataclass
 
 
 @dataclass

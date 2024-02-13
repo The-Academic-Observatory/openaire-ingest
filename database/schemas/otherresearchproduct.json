@@ -571,5 +571,25 @@
         "type": "STRING"
       }
     ]
+  },
+  {
+    "name": "isGreen",
+    "mode": "NULLABLE",
+    "type": "BOOL"
+  },
+  {
+    "name": "openAccessColor",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "isInDiamondJournal",
+    "mode": "NULLABLE",
+    "type": "BOOL"
+  },
+  {
+    "name": "publiclyFunded",
+    "mode": "NULLABLE",
+    "type": "BOOL"
   }
 ]

@@ -1,70 +1,70 @@
 [
-    {
-        "name": "alternativenames",
-        "description": "Alternative names that identify the organisation",
-        "type": "STRING",
-        "mode": "REPEATED"
-    },
-    {
-        "name": "country",
-        "description": "The organisation country",
-        "type": "RECORD",
-        "mode": "NULLABLE",
-        "fields": [
-            {
-                "name": "code",
-                "description": "ISO 3166-1 alpha-2 country code (i.e. IT)",
-                "type": "STRING",
-                "mode": "NULLABLE"
-            },
-            {
-                "name": "label",
-                "description": "The label for that code (i.e. Italy)",
-                "type": "STRING",
-                "mode": "NULLABLE"
-            }
-        ]
-    },
-    {
-        "name": "id",
-        "description": "The OpenAIRE id for the organisation",
+  {
+    "name": "alternativenames",
+    "description": "Alternative names that identify the organisation",
+    "type": "STRING",
+    "mode": "REPEATED"
+  },
+  {
+    "name": "country",
+    "description": "The organisation country",
+    "type": "RECORD",
+    "mode": "NULLABLE",
+    "fields": [
+      {
+        "name": "code",
+        "description": "ISO 3166-1 alpha-2 country code (i.e. IT)",
         "type": "STRING",
         "mode": "NULLABLE"
-    },
-    {
-        "name": "legalname",
+      },
+      {
+        "name": "label",
+        "description": "The label for that code (i.e. Italy)",
         "type": "STRING",
         "mode": "NULLABLE"
-    },
-    {
-        "name": "legalshortname",
+      }
+    ]
+  },
+  {
+    "name": "id",
+    "description": "The OpenAIRE id for the organisation",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "legalname",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "legalshortname",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "pid",
+    "description": "Persistent identifiers for the organisation i.e. isni 0000000090326370",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "fields": [
+      {
+        "name": "scheme",
+        "description": "The scheme of the identifier (i.e. isni)",
         "type": "STRING",
         "mode": "NULLABLE"
-    },
-    {
-        "name": "pid",
-        "description": "Persistent identifiers for the organisation i.e. isni 0000000090326370",
-        "type": "RECORD",
-        "mode": "REPEATED",
-        "fields": [
-            {
-                "name": "scheme",
-                "description": "The scheme of the identifier (i.e. isni)",
-                "type": "STRING",
-                "mode": "NULLABLE"
-            },
-            {
-                "name": "value",
-                "description": "The value in the schema (i.e. 0000000090326370)",
-                "type": "STRING",
-                "mode": "NULLABLE"
-            }
-        ]
-    },
-    {
-        "name": "websiteurl",
+      },
+      {
+        "name": "value",
+        "description": "The value in the schema (i.e. 0000000090326370)",
         "type": "STRING",
         "mode": "NULLABLE"
-    }
+      }
+    ]
+  },
+  {
+    "name": "websiteurl",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
 ]
     
