@@ -18,15 +18,8 @@ import os
 import pathlib
 import re
 from typing import Dict, Union, List, Optional
+
 from openaire.files import schema_folder as default_schema_folder
-
-PART_LIST_GZ_PATTERN = (
-    r"^part-\d{5}\.json\.gz$|^part-\d{5}-[\d|\w]{8}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{12}-[\d|\w]{4}\.json\.gz$"
-)
-
-PART_LIST_GZ_NR_PATTERN = (
-    r"^part-\d{5}\.json\.gz$|^part-\d{5}-[\d|\w]{8}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{4}-[\d|\w]{12}-[\d|\w]{4}\.json\.gz$"
-)
 
 
 class Table:
@@ -111,7 +104,9 @@ class Table:
     def transform_files(self):
         files = []
         for file in os.listdir(self.part_location):
-            if (self.remove_nulls and re.match(r".+_NR\.json\.gz$", file)) or (not self.remove_nulls and re.match(r".+((?<!_NR)\.json\.gz)$", file)):
+            if (self.remove_nulls and re.match(r".+_NR\.json\.gz$", file)) or (
+                not self.remove_nulls and re.match(r".+((?<!_NR)\.json\.gz)$", file)
+            ):
                 files.append(os.path.join(self.part_location, file))
         files.sort()
         return files
