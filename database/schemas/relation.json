@@ -3,7 +3,7 @@
     "name": "provenance",
     "type": "RECORD",
     "mode": "NULLABLE",
-    "description" : "The reason why OpenAIRE holds the relation",
+    "description": "The reason why OpenAIRE holds the relation",
     "fields": [
       {
         "name": "provenance",
@@ -23,7 +23,7 @@
     "name": "reltype",
     "type": "RECORD",
     "mode": "NULLABLE",
-    "description" : "To represent the semantics of a relation between two entities",
+    "description": "To represent the semantics of a relation between two entities",
     "fields": [
       {
         "name": "name",
@@ -53,24 +53,24 @@
     "name": "target",
     "type": "STRING",
     "mode": "NULLABLE",
-    "description" : "The identifier of the target in the relation"
+    "description": "The identifier of the target in the relation"
   },
   {
     "name": "targetType",
     "type": "STRING",
     "mode": "NULLABLE",
-    "description" : "The entity type of the target in the relation"
+    "description": "The entity type of the target in the relation"
   },
   {
     "name": "validated",
     "type": "BOOLEAN",
     "mode": "NULLABLE",
-    "description":"True if the relation is related to a project and it has been collected from an authoritative source (i.e. the funder)"
+    "description": "True if the relation is related to a project and it has been collected from an authoritative source (i.e. the funder)"
   },
   {
     "name": "validationDate",
     "type": "DATE",
     "mode": "NULLABLE",
-    "description":"The date when the relation was collected from OpenAIRE"
+    "description": "The date when the relation was collected from OpenAIRE"
   }
 ]

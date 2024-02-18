@@ -66,30 +66,30 @@
     ]
   },
   {
-  "name": "granted",
-  "type": "RECORD",
-  "mode": "REPEATED",
-  "description": "The money granted to the project",
-  "fields": [
-    {
-      "name": "currency",
-      "type": "STRING",
-      "mode": "NULLABLE",
-      "description": "The currency of the granted amount (e.g. EUR)"
-    },
-    {
-      "name": "fundedamount",
-      "type": "FLOAT",
-      "mode": "NULLABLE",
-      "description": "The funded amount"
-    },
-    {
-      "name": "totalcost",
-      "type": "FLOAT",
-      "mode": "NULLABLE",
-      "description": "The money granted to the project"
-    }
-   ]
+    "name": "granted",
+    "type": "RECORD",
+    "mode": "REPEATED",
+    "description": "The money granted to the project",
+    "fields": [
+      {
+        "name": "currency",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "The currency of the granted amount (e.g. EUR)"
+      },
+      {
+        "name": "fundedamount",
+        "type": "FLOAT",
+        "mode": "NULLABLE",
+        "description": "The funded amount"
+      },
+      {
+        "name": "totalcost",
+        "type": "FLOAT",
+        "mode": "NULLABLE",
+        "description": "The money granted to the project"
+      }
+    ]
   },
   {
     "name": "h2020programme",

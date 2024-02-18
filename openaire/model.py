@@ -16,7 +16,9 @@
 
 import os
 import pathlib
+import re
 from typing import Dict, Union, List, Optional
+
 from openaire.files import schema_folder as default_schema_folder
 
 
@@ -35,7 +37,7 @@ class Table:
         so the file to download is otherresearchproduct_1.tar
     :param remove_nulls: Columns of where suspect nulls are that cause issues with importing to Bigquery.
     :param local_part_list_gz: List of where all the part files are locally stored (for the upload step).
-    :param uri_part_list: List of all the uris of parts uploaded to Google Cloud Storage. 
+    :param uri_part_list: List of all the uris of parts uploaded to Google Cloud Storage.
 
     """
 
@@ -50,8 +52,6 @@ class Table:
         gcs_uri_pattern: str,
         alt_name: Optional[str] = None,
         remove_nulls: Optional[Union[str, List[str]]] = None,
-        local_part_list_gz: Optional[List[str]] = None,
-        uri_part_list: Optional[List[str]] = None,
     ):
         self.name = name
         self.num_parts = num_parts
@@ -59,15 +59,10 @@ class Table:
         self.full_table_id = full_table_id
         self.remove_nulls = remove_nulls
         self.alt_name = alt_name
-        self.local_part_list_gz = local_part_list_gz
-        self.uri_part_list = uri_part_list
-
         self.gcs_uri_pattern = gcs_uri_pattern
-
         self.download_folder = os.path.join(download_folder, name)
         self.decompress_folder = os.path.join(decompress_folder)
         self.part_location = os.path.join(decompress_folder, name)
-
         self.zenodo_name = alt_name if alt_name else name
 
     @property
@@ -94,3 +89,24 @@ class Table:
             )
 
         return downloads
+
+    @property
+    def extracted_files(self):
+        files = [
+            os.path.join(self.part_location, file)
+            for file in os.listdir(self.part_location)
+            if re.match(r".+((?<!_NR)\.json\.gz)$", file)
+        ]
+        files.sort()
+        return files
+
+    @property
+    def transform_files(self):
+        files = []
+        for file in os.listdir(self.part_location):
+            if (self.remove_nulls and re.match(r".+_NR\.json\.gz$", file)) or (
+                not self.remove_nulls and re.match(r".+((?<!_NR)\.json\.gz)$", file)
+            ):
+                files.append(os.path.join(self.part_location, file))
+        files.sort()
+        return files

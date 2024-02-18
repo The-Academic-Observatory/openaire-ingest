@@ -657,5 +657,25 @@
     "description": "Type of the result: one of 'publication', 'dataset', 'software', 'other' (see also https://api.openaire.eu/vocabularies/dnet:result_typologies)",
     "type": "STRING",
     "mode": "NULLABLE"
+  },
+  {
+    "name": "isGreen",
+    "mode": "NULLABLE",
+    "type": "BOOL"
+  },
+  {
+    "name": "openAccessColor",
+    "mode": "NULLABLE",
+    "type": "STRING"
+  },
+  {
+    "name": "isInDiamondJournal",
+    "mode": "NULLABLE",
+    "type": "BOOL"
+  },
+  {
+    "name": "publiclyFunded",
+    "mode": "NULLABLE",
+    "type": "BOOL"
   }
 ]

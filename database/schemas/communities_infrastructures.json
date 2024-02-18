@@ -1,44 +1,44 @@
 [
-{ 
+  {
     "description": "OpenAIRE id of the research community/research infrastructure",
     "name": "id",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "The acronym of the community",
     "name": "acronym",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "The long name of the community",
     "name": "name",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "One of {Research Community, Research infrastructure}",
     "name": "type",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "Description of the research community/research infrastructure",
     "name": "description",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "The URL of the Zenodo community associated to the Research community/Research infrastructure",
     "name": "zenodo_community",
     "type": "STRING",
     "mode": "NULLABLE"
-},
-{ 
+  },
+  {
     "description": "Only for research communities: the list of the subjects associated to the research community",
-    "name": "subject", 
+    "name": "subject",
     "type": "STRING",
     "mode": "REPEATED"
-}
+  }
 ]
