@@ -2,12 +2,13 @@ SELECT
 
 *
 
-FROM `academic-observatory.openaire.relation`
+FROM `academic-observatory.openaire.relation20250211`
 
-WHERE source.type = 'result' AND target.type = 'result'
----WHERE source.type = 'result' AND target.type = 'datasource'
----WHERE source.type = 'result' AND target.type = 'organization'
----WHERE source.type = 'result' AND target.type = 'project'
----WHERE source.type = 'organization' AND target.type = 'project'
----WHERE source.type = 'organization' AND target.type = 'datasource'
----WHERE source.type = `organization' AND target.type = 'organization'
+---WHERE sourceType = 'product' AND targetType = 'product' 
+WHERE sourceType = 'product' AND targetType = 'datasource'
+---WHERE sourceType = 'product' AND targetType = 'organization'
+---WHERE sourceType = 'product' AND targetType = 'project'
+---WHERE sourceType = 'organization' AND targetType = 'project'
+---WHERE sourceType = 'organization' AND targetType = 'datasource'
+---WHERE sourceType = 'organization' AND targetType = 'organization'
+---WHERE sourceType = 'project' AND targetType = 'datasource'
